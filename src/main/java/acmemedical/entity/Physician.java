@@ -18,9 +18,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 
 //TODO PH01 - Add the missing annotations.
-@Entity(name = "Physician")
-
-
+@Entity
 //TODO PH02 - Do we need a mapped super class? If so, which one?
 @Table(name = "Physician")
 public class Physician extends PojoBase implements Serializable {
