@@ -2,9 +2,12 @@
  * File:  Patient.java Course Materials CST 8277
  *
  * @author Teddy Yap
+ * Modified by: Krish Chaudhary
  * 
  */
 package acmemedical.entity;
+
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,34 +17,45 @@ import java.util.Set;
 
 /**
  * The persistent class for the patient database table.
+ *
  */
 //TODO PA01 - Add the missing annotations.
+@Entity
 //TODO PA02 - Do we need a mapped super class?  If so, which one?
+@Table(name = "patient")
 public class Patient extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	// TODO PA03 - Add missing annotations.
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
 	// TODO PA04 - Add missing annotations.
+	@Column(name = "last_name")
 	private String lastName;
 
 	// TODO PA05 - Add missing annotations.
+	@Column(name = "year", nullable = false)
 	private int year;
 
 	// TODO PA06 - Add missing annotations.
+	@Column(name = "address", nullable = false)
 	private String address;
 
 	// TODO PA07 - Add missing annotations.
+	@Column(name = "height",nullable= false)
 	private int height;
 
 	// TODO PA08 - Add missing annotations.
+	@Column(name = "width", nullable = false)
 	private int weight;
 
 	// TODO PA09 - Add missing annotations.
+	@Column(name = "smoker", nullable = false)
 	private byte smoker;
 
 	// TODO PA10 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@OneToMany(mappedBy = "patient",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<Prescription> prescriptions = new HashSet<>();
 
 	public Patient() {
