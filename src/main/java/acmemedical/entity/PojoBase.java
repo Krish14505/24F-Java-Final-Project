@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
+ * Author: Krish Chaudhary
+ * version: 1
  * Abstract class that is base of (class) hierarchy for all @Entity classes
  */
 
@@ -114,3 +116,8 @@ public abstract class PojoBase implements Serializable {
 		return false;
 	}
 }
+/**
+ * comments for other team members:
+ * ---> make sure to check that all the annotations are correct !
+ * ---> let the modifier know if you change something to the code
+ */
