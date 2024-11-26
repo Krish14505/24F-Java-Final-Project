@@ -6,25 +6,37 @@
  */
 package acmemedical.entity;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 
 @SuppressWarnings("unused")
 
 /**
+ * Author: Teddy Yap
+ * Modified By: Krish Chaudhary
  * The persistent class for the medical_certificate database table.
  */
 //TODO MC01 - Add the missing annotations.
+@Entity
 //TODO MC02 - Do we need a mapped super class?  If so, which one?
+@Table(name = "medical_certificate")
 public class MedicalCertificate extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO MC03 - Add annotations for 1:1 mapping.  What should be the cascade and fetch types?
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "medical_training_id", referencedColumnName = "id", nullable = false)
 	private MedicalTraining medicalTraining;
 
 	// TODO MC04 - Add annotations for M:1 mapping.  What should be the cascade and fetch types?
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "physician_id", referencedColumnName = "id",nullable = false)
 	private Physician owner;
 
 	// TODO MC05 - Add annotations.
+	@Basic(optional = false)
+	@Column(nullable = false)
 	private byte signed;
 
 	public MedicalCertificate() {
