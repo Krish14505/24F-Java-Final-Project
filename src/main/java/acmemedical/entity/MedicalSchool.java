@@ -6,6 +6,10 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,19 +19,33 @@ import java.util.Set;
  * The persistent class for the medical_school database table.
  */
 //TODO MS01 - Add the missing annotations.
+	@Entity
+	@Access(AccessType.FIELD)
 //TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
+	@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //TODO MS03 - Do we need a mapped super class?  If so, which one?
+	@DiscriminatorColumn(name = "school_type",discriminatorType = DiscriminatorType.STRING)
+	@Table(name = "medical_school")
+
 //TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
+	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,property = "type")
+	@JsonSubTypes( {
+			@JsonSubTypes.Type(value=PublicSchool.class, name = "public"),
+			@JsonSubTypes.Type(value= PrivateSchool.class, name = "private")
+	})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO MS05 - Add the missing annotations.
+	@Column(name = "name",nullable = false)
 	private String name;
 
 	// TODO MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
+	@OneToMany(mappedBy = "school", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<MedicalTraining> medicalTrainings = new HashSet<>();
 
 	// TODO MS07 - Add missing annotation.
+	@Column(name = "is_public")
 	private boolean isPublic;
 
 	public MedicalSchool() {
@@ -40,6 +58,7 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
     }
 
 	// TODO MS08 - Is an annotation needed here?
+	//No we don't need the annotation here because it's already mentioned in the field.
 	public Set<MedicalTraining> getMedicalTrainings() {
 		return medicalTrainings;
 	}

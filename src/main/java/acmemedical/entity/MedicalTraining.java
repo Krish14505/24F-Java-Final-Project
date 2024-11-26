@@ -11,7 +11,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.Embedded;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
 
 @SuppressWarnings("unused")
 
@@ -19,14 +20,19 @@ import jakarta.persistence.Embedded;
  * The persistent class for the medical_training database table.
  */
 //TODO MT01 - Add the missing annotations.
+@Entity
 //TODO MT02 - Do we need a mapped super class?  If so, which one?
+@Table(name = "medical_training")
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)
 	private MedicalSchool school;
 
 	// TODO MT04 - Add annotations for 1:1.  What should be the cascade and fetch types?
+	@OneToOne(mappedBy = "medicalTraining",cascade = CascadeType.ALL)
 	private MedicalCertificate certificate;
 
 	@Embedded
