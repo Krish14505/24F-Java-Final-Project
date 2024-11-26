@@ -116,8 +116,3 @@ public abstract class PojoBase implements Serializable {
 		return false;
 	}
 }
-/**
- * comments for other team members:
- * ---> make sure to check that all the annotations are correct !
- * ---> let the modifier know if you change something to the code
- */
