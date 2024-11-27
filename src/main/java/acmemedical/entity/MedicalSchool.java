@@ -33,8 +33,16 @@ import java.util.Set;
 			@JsonSubTypes.Type(value=PublicSchool.class, name = "public"),
 			@JsonSubTypes.Type(value= PrivateSchool.class, name = "private")
 	})
+	// Add the NamedQuery to resolve the issue of isDuplicate() method in service class
+	@NamedQueries({
+		@NamedQuery(name="MedicalSchool.isDuplicate", query = "SELECT COUNT(ms) FROM MedicalSchool ms WHERE ms.name = :param1")
+	})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+
+	//Variable store the name of the query
+	public static final String IS_DUPLICATE_QUERY_NAME = "MedicalSchool.isDuplicate";
 	
 	// TODO MS05 - Add the missing annotations.
 	@Column(name = "name",nullable = false)
