@@ -27,21 +27,18 @@ import static acmemedical.entity.MedicalSchool.IS_DUPLICATE_QUERY_NAME;
 import static acmemedical.entity.MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import acmemedical.rest.resource.MedicalTrainingResource;
 import jakarta.ejb.Singleton;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import jakarta.transaction.Transactional;
 
@@ -49,11 +46,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import acmemedical.entity.MedicalTraining;
-import acmemedical.entity.Patient;
 import acmemedical.entity.MedicalCertificate;
 import acmemedical.entity.Medicine;
 import acmemedical.entity.Prescription;
-import acmemedical.entity.PrescriptionPK;
 import acmemedical.entity.SecurityRole;
 import acmemedical.entity.SecurityUser;
 import acmemedical.entity.Physician;
@@ -76,7 +71,13 @@ public class ACMEMedicalService implements Serializable {
     
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
+    @Inject
+    private MedicalTrainingResource medicalTrainingResource;
 
+    /**
+     * The method that is used to fetch all the physicians(security users)
+     * @return physician
+     */
     public List<Physician> getAllPhysicians() {
 //        CriteriaBuilder cb = em.getCriteriaBuilder();
 //        CriteriaQuery<Physician> cq = cb.createQuery(Physician.class);
@@ -86,16 +87,30 @@ public class ACMEMedicalService implements Serializable {
         return query.getResultList();
     }
 
+    /**
+     * The method that returns the specific physician by id
+     * @param id of the physician
+     * @return physician
+     */
     public Physician getPhysicianById(int id) {
         return em.find(Physician.class, id);
     }
 
+    /**
+     * The method used to persist the physician into the table physician in the database.
+     * @param newPhysician newPhysician being added!
+     * @return newPhysician
+     */
     @Transactional
     public Physician persistPhysician(Physician newPhysician) {
         em.persist(newPhysician);
         return newPhysician;
     }
 
+    /**
+     * The method used to build the new physician user
+     * @param newPhysician newPhysician being added !
+     */
     @Transactional
     public void buildUserForNewPhysician(Physician newPhysician) {
         SecurityUser userForNewPhysician = new SecurityUser();
@@ -121,6 +136,13 @@ public class ACMEMedicalService implements Serializable {
         em.persist(userForNewPhysician);
     }
 
+    /**
+     * The method used to set the medicine for physicianPatient
+     * @param physicianId physician ID
+     * @param patientId patient id
+     * @param newMedicine newMedicine
+     * @return Medicine object
+     */
     @Transactional
     public Medicine setMedicineForPhysicianPatient(int physicianId, int patientId, Medicine newMedicine) {
         Physician physicianToBeUpdated = em.find(Physician.class, physicianId);
@@ -185,7 +207,11 @@ public class ACMEMedicalService implements Serializable {
             em.remove(physician);
         }
     }
-    
+
+    /**
+     * Get the records of all the MedicalSchool table
+     * @return list of query result list
+     */
     public List<MedicalSchool> getAllMedicalSchools() {
 //        CriteriaBuilder cb = em.getCriteriaBuilder();
 //        CriteriaQuery<MedicalSchool> cq = cb.createQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME,MedicalSchool.class);
@@ -197,6 +223,12 @@ public class ACMEMedicalService implements Serializable {
 
     // Why not use the build-in em.find?  The named query SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME
     // includes JOIN FETCH that we cannot add to the above API
+
+    /**
+     * fetch the specific Medical school by its id
+     * @param id id of the MedicalSchool
+     * @return get the specific Result
+     */
     public MedicalSchool getMedicalSchoolById(int id) {
         TypedQuery<MedicalSchool> specificMedicalSchoolQuery = em.createNamedQuery(SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME, MedicalSchool.class);
         specificMedicalSchoolQuery.setParameter(PARAM1, id);
@@ -216,6 +248,11 @@ public class ACMEMedicalService implements Serializable {
         return allQuery.getSingleResult();
     }
 
+    /**
+     * delete the medical school
+     * @param id id of the medicalSchool
+     * @return medicalSchool Instance
+     */
     @Transactional
     public MedicalSchool deleteMedicalSchool(int id) {
         //MedicalSchool ms = getMedicalSchoolById(id);
@@ -239,19 +276,35 @@ public class ACMEMedicalService implements Serializable {
     }
     
     // Please study & use the methods below in your test suites
-    
+
+    /**
+     * Find checking that the newMedicalSchool should not be duplicated.
+     * @param newMedicalSchool new instance
+     * @return boolean value either true or false
+     */
     public boolean isDuplicated(MedicalSchool newMedicalSchool) {
         TypedQuery<Long> allMedicalSchoolsQuery = em.createNamedQuery(IS_DUPLICATE_QUERY_NAME, Long.class);
         allMedicalSchoolsQuery.setParameter(PARAM1, newMedicalSchool.getName());
         return (allMedicalSchoolsQuery.getSingleResult() >= 1);
     }
 
+    /**
+     * save the medical school to the table
+     * @param newMedicalSchool instance
+     * @return MedicalInstance
+     */
     @Transactional
     public MedicalSchool persistMedicalSchool(MedicalSchool newMedicalSchool) {
         em.persist(newMedicalSchool);
         return newMedicalSchool;
     }
 
+    /**
+     *  updated the medical school
+     * @param id id
+     * @param updatingMedicalSchool updatingMedicalSchool
+     * @return MedicalSchoolTobeUpdated
+     */
     @Transactional
     public MedicalSchool updateMedicalSchool(int id, MedicalSchool updatingMedicalSchool) {
     	MedicalSchool medicalSchoolToBeUpdated = getMedicalSchoolById(id);
@@ -263,19 +316,35 @@ public class ACMEMedicalService implements Serializable {
         }
         return medicalSchoolToBeUpdated;
     }
-    
+
+    /**
+     * persist the medicalTraining to the table in the database
+     * @param newMedicalTraining newMedicalTraining
+     * @return newMedicalTraining
+     */
     @Transactional
     public MedicalTraining persistMedicalTraining(MedicalTraining newMedicalTraining) {
         em.persist(newMedicalTraining);
         return newMedicalTraining;
     }
-    
+
+    /**
+     * return the specific MedicalTraining record by its id
+     * @param mtId id of the table
+     * @return one single result
+     */
     public MedicalTraining getMedicalTrainingById(int mtId) {
         TypedQuery<MedicalTraining> allMedicalTrainingQuery = em.createNamedQuery(MedicalTraining.FIND_BY_ID, MedicalTraining.class);
         allMedicalTrainingQuery.setParameter(PARAM1, mtId);
         return allMedicalTrainingQuery.getSingleResult();
     }
 
+    /**
+     * Update the medical training with id and the newly updated value of the instance .
+     * @param id id of the medicalTraining
+     * @param medicalTrainingWithUpdates updated with valued
+     * @return updated
+     */
     @Transactional
     public MedicalTraining updateMedicalTraining(int id, MedicalTraining medicalTrainingWithUpdates) {
     	MedicalTraining medicalTrainingToBeUpdated = getMedicalTrainingById(id);
@@ -289,10 +358,28 @@ public class ACMEMedicalService implements Serializable {
 
     //The following methods are added by Krish Chaudhary to completed the requirements of the other entity's Resources
 
+    /**
+     * get All the medicalTraining with the list
+     * @return result list consisting of MedicalTraining records
+     */
     public List<MedicalTraining> getAllMedicalTrainings(){
         TypedQuery<MedicalTraining>  query = em.createNamedQuery(ALL_MEDICAL_TRAINING_QUERY_NAME,MedicalTraining.class);
         return query.getResultList();
     }
 
+    /**
+     * delete the medicalTraining instance
+     * @param id id of the training
+     * @return MedicalTraining
+     */
+    @Transactional
+    public MedicalTraining deleteMedicalTraining(int id) {
 
+        MedicalTraining mt = getMedicalTrainingById(id);
+        if (mt != null) {
+            em.refresh(mt);
+            TypedQuery<SecurityUser>
+        }
+        return null;
+    }
 }

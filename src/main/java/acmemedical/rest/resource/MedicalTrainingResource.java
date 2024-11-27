@@ -45,7 +45,7 @@ public class MedicalTrainingResource {
     @Path(RESOURCE_PATH_TRAINING_ID_PATH)
     public Response deleteMedicalTraining(@PathParam(TRAINING_ID_RESOURCE_NAME)int medicalTrainingId) {
         LOG.debug("Try to delete specific medical training: {}", medicalTrainingId);
-        MedicalTraining training = service.deleteMedicalTraining();
+        MedicalTraining training = service.deleteMedicalTraining(medicalTrainingId);
         Response response = Response.ok(training).build();
         return response;
     }

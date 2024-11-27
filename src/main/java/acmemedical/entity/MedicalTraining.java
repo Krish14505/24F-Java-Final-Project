@@ -24,7 +24,7 @@ import org.hibernate.annotations.Fetch;
 //TODO MT02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "medical_training")
 //Added the NamedQuery for the ACMEMedicalService class to fetch the specific Medical Training
-@NamedQuery(name= "MedicalTraining.findById", query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1")
+@NamedQuery(name=MedicalTraining.FIND_BY_ID , query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1")
 //Added the NamedQuery for the ACMEMedicalService class to fetch all the training
 @NamedQuery(name=MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME, query="SELECT mt FROM MedicalTraining mt")
 
