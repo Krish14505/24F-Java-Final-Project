@@ -107,7 +107,12 @@ public class ACMEMedicalService implements Serializable {
         String pwHash = pbAndjPasswordHash.generate(DEFAULT_USER_PASSWORD.toCharArray());
         userForNewPhysician.setPwHash(pwHash);
         userForNewPhysician.setPhysician(newPhysician);
-        SecurityRole userRole = /* TODO ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */ null;
+
+        //Implementation on find the role of the user
+        TypedQuery<SecurityRole> query = em.createNamedQuery("SecurityRole.findByName", SecurityRole.class);
+        query.setParameter("roleName",USER_ROLE);
+        SecurityRole userRole = query.getSingleResult();/* TODO ACMECS01 - Use NamedQuery on SecurityRole to find USER_ROLE */
+
         userForNewPhysician.getRoles().add(userRole);
         userRole.getUsers().add(userForNewPhysician);
         em.persist(userForNewPhysician);
@@ -166,11 +171,12 @@ public class ACMEMedicalService implements Serializable {
         Physician physician = getPhysicianById(id);
         if (physician != null) {
             em.refresh(physician);
-            TypedQuery<SecurityUser> findUser = 
+            TypedQuery<SecurityUser> findUser = em.createNamedQuery("SecurityUser.findByPhysicianId", SecurityUser.class);
             /* TODO ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
                so that when we remove it, the relationship from SECURITY_USER table
                is not dangling
-            */ null;
+            */
+            findUser.setParameter("physicianId",physician.getId());
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(physician);
