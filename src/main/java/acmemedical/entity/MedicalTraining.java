@@ -23,9 +23,13 @@ import org.hibernate.annotations.Fetch;
 @Entity
 //TODO MT02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "medical_training")
+//Added the NamedQuery for the ACMEMedicalService class to fetch the specific Medical Training
+@NamedQuery(name= "MedicalTraining.findById", query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1")
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
+	//variable that store the information of the query name
+	public static final String FIND_BY_ID = "MedicalTraining.findById";
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)
