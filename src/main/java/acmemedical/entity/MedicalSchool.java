@@ -35,7 +35,8 @@ import java.util.Set;
 	})
 	// Add the NamedQuery to resolve the issue of isDuplicate() method in service class
 	@NamedQueries({
-		@NamedQuery(name="MedicalSchool.isDuplicate", query = "SELECT COUNT(ms) FROM MedicalSchool ms WHERE ms.name = :param1")
+		@NamedQuery(name="MedicalSchool.isDuplicate", query = "SELECT COUNT(ms) FROM MedicalSchool ms WHERE ms.name = :param1"),
+			@NamedQuery(name="MedicalSchool.findById", query = "SELECT ms FROM MedicalSchool ms LEFT JOIN FETCH ms.medicalTrainings WHERE ms.id = :param1")
 	})
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -43,7 +44,9 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
 
 	//Variable store the name of the query
 	public static final String IS_DUPLICATE_QUERY_NAME = "MedicalSchool.isDuplicate";
-	
+
+	//variable store the name of the query
+	public static final String SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME = "MedicalSchool.findById";
 	// TODO MS05 - Add the missing annotations.
 	@Column(name = "name",nullable = false)
 	private String name;
