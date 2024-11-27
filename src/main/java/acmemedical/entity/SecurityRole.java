@@ -23,6 +23,9 @@ import java.util.Set;
 //TODO SR01 - Make this into JPA entity and add all necessary annotations inside the class.
 @Entity
 @Table(name = "security_role")
+@NamedQueries({
+        @NamedQuery(name="SecurityRole.findByName", query="SELECT r FROM SecurityRole r WHERE r.roleName = :roleName")
+})
 public class SecurityRole implements Serializable {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
