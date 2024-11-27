@@ -28,6 +28,7 @@ import org.hibernate.annotations.Fetch;
 //Added the NamedQuery for the ACMEMedicalService class to fetch all the training
 @NamedQuery(name=MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME, query="SELECT mt FROM MedicalTraining mt")
 
+@NamedQuery(name = , query = "SELECT COUNT(mt) FROM MedicalTraining mt WHERE mt.id = :param1")
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +36,10 @@ public class MedicalTraining extends PojoBase implements Serializable {
 	public static final String ALL_MEDICAL_TRAINING_QUERY_NAME = "MedicalTraining.findAllMedicalTraining";
 	//variable that store the information of the query name
 	public static final String FIND_BY_ID = "MedicalTraining.findById";
+
+	//variable that reference the is_Duplicate value
+	public static  final String IS_DUPLICATE_TRAINING = "MedicalTraining.isDuplicate";
+
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
 	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)

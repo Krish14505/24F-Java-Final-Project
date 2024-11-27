@@ -8,6 +8,7 @@
 package acmemedical.ejb;
 
 import static acmemedical.entity.MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME;
+import static acmemedical.entity.MedicalTraining.IS_DUPLICATE_TRAINING;
 import static acmemedical.utility.MyConstants.DEFAULT_KEY_SIZE;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ALGORITHM;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ITERATIONS;
@@ -71,8 +72,8 @@ public class ACMEMedicalService implements Serializable {
     
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
-    @Inject
-    private MedicalTrainingResource medicalTrainingResource;
+//    @Inject
+//    private MedicalTrainingResource medicalTrainingResource;
 
     /**
      * The method that is used to fetch all the physicians(security users)
@@ -375,11 +376,16 @@ public class ACMEMedicalService implements Serializable {
     @Transactional
     public MedicalTraining deleteMedicalTraining(int id) {
 
-        MedicalTraining mt = getMedicalTrainingById(id);
-        if (mt != null) {
-            em.refresh(mt);
-            TypedQuery<SecurityUser>
-        }
-        return null;
+       MedicalTraining mt = getMedicalTrainingById(id);
+       if(mt != null){
+           em.remove(mt);
+       }
+       return mt;
+    }
+
+    public boolean isDuplicatedTraining(MedicalTraining newTraining){
+        TypedQuery<Long> query = em.createNamedQuery(IS_DUPLICATE_TRAINING, Long.class);
+        query.setParameter(PARAM1,newTraining.getId());
+        return query.getSingleResult() >= 1 ;
     }
 }
