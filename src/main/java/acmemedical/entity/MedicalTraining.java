@@ -25,9 +25,14 @@ import org.hibernate.annotations.Fetch;
 @Table(name = "medical_training")
 //Added the NamedQuery for the ACMEMedicalService class to fetch the specific Medical Training
 @NamedQuery(name= "MedicalTraining.findById", query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1")
+//Added the NamedQuery for the ACMEMedicalService class to fetch all the training
+@NamedQuery(name=MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME, query="SELECT mt FROM MedicalTraining mt")
+
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	//variable used to reference the ALL training of medical
+	public static final String ALL_MEDICAL_TRAINING_QUERY_NAME = "MedicalTraining.findAllMedicalTraining";
 	//variable that store the information of the query name
 	public static final String FIND_BY_ID = "MedicalTraining.findById";
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?

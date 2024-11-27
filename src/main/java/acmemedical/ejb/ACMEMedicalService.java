@@ -7,6 +7,7 @@
  */
 package acmemedical.ejb;
 
+import static acmemedical.entity.MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME;
 import static acmemedical.utility.MyConstants.DEFAULT_KEY_SIZE;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ALGORITHM;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ITERATIONS;
@@ -285,5 +286,13 @@ public class ACMEMedicalService implements Serializable {
         }
         return medicalTrainingToBeUpdated;
     }
-    
+
+    //The following methods are added by Krish Chaudhary to completed the requirements of the other entity's Resources
+
+    public List<MedicalTraining> getAllMedicalTrainings(){
+        TypedQuery<MedicalTraining>  query = em.createNamedQuery(ALL_MEDICAL_TRAINING_QUERY_NAME,MedicalTraining.class);
+        return query.getResultList();
+    }
+
+
 }
