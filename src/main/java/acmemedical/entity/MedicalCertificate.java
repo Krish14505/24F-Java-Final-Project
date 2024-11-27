@@ -21,9 +21,14 @@ import java.io.Serializable;
 @Entity
 //TODO MC02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "medical_certificate")
+//added the NamedQuery to find the specific MedicalCertificate
+@NamedQuery(name="MedicalCertificate.findById", query="SELECT mc FROM MedicalCertificate mc WHERE mc.id = :param1")
 public class MedicalCertificate extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
+	//add the variable that reference to the MedicalService class
+	public static final String ID_CARD_QUERY_NAME = "MedicalCertificate.findByIdCard";
+
 	// TODO MC03 - Add annotations for 1:1 mapping.  What should be the cascade and fetch types?
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "medical_training_id", referencedColumnName = "id", nullable = false)
