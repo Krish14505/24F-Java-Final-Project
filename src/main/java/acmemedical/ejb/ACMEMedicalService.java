@@ -184,10 +184,12 @@ public class ACMEMedicalService implements Serializable {
     }
     
     public List<MedicalSchool> getAllMedicalSchools() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<MedicalSchool> cq = cb.createQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME,MedicalSchool.class);
-        cq.select(cq.from(MedicalSchool.class));
-        return em.createQuery(cq).getResultList();
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<MedicalSchool> cq = cb.createQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME,MedicalSchool.class);
+//        cq.select(cq.from(MedicalSchool.class));
+//        return em.createQuery(cq).getResultList();
+        TypedQuery<MedicalSchool> query = em.createNamedQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME, MedicalSchool.class);
+        return query.getResultList();
     }
 
     // Why not use the build-in em.find?  The named query SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME
