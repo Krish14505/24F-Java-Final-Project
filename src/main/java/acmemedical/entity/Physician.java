@@ -6,6 +6,8 @@
  */
 package acmemedical.entity;
 
+import jakarta.persistence.*;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +18,9 @@ import java.util.Set;
 @SuppressWarnings("unused")
 
 //TODO PH01 - Add the missing annotations.
+@Entity
 //TODO PH02 - Do we need a mapped super class? If so, which one?
+@Table(name = "Physician")
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -25,15 +29,19 @@ public class Physician extends PojoBase implements Serializable {
     }
 
 	// TODO PH03 - Add annotations.
+	@Column(name = "first_name")
 	private String firstName;
 
 	// TODO PH04 - Add annotations.
+	@Column(name = "last_name")
 	private String lastName;
 
 	// TODO PH05 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<MedicalCertificate> medicalCertificates = new HashSet<>();
 
 	// TODO PH06 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@OneToMany(mappedBy = "physician", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Prescription> prescriptions = new HashSet<>();
 
 	public String getFirstName() {
@@ -53,7 +61,8 @@ public class Physician extends PojoBase implements Serializable {
 	}
 
 	// TODO PH07 - Is an annotation needed here?
-    public Set<MedicalCertificate> getMedicalCertificates() {
+	//No, we don't need an annotation on access modifier as we defined it on field.
+	public Set<MedicalCertificate> getMedicalCertificates() {
 		return medicalCertificates;
 	}
 
@@ -62,6 +71,7 @@ public class Physician extends PojoBase implements Serializable {
 	}
 
 	// TODO PH08 - Is an annotation needed here?
+	//No, we don't need an annotation on access modifier as we defined it on field.
     public Set<Prescription> getPrescriptions() {
 		return prescriptions;
 	}
