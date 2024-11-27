@@ -21,9 +21,12 @@ import java.util.Set;
 @Entity
 //TODO PH02 - Do we need a mapped super class? If so, which one?
 @Table(name = "Physician")
+@NamedQuery(name=Physician.ALL_PHYSICIAN_QUERY_NAME, query= "SELECT p FROM Physician p")
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	//variable used to reference the select query
+	public static final String ALL_PHYSICIAN_QUERY_NAME = "Physician.findALl";
     public Physician() {
     	super();
     }
