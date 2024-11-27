@@ -171,11 +171,12 @@ public class ACMEMedicalService implements Serializable {
         Physician physician = getPhysicianById(id);
         if (physician != null) {
             em.refresh(physician);
-            TypedQuery<SecurityUser> findUser = 
+            TypedQuery<SecurityUser> findUser = em.createNamedQuery("SecurityUser.findByPhysicianId", SecurityUser.class);
             /* TODO ACMECS02 - Use NamedQuery on SecurityRole to find this related Student
                so that when we remove it, the relationship from SECURITY_USER table
                is not dangling
-            */ null;
+            */
+            findUser.setParameter("physicianId",physician.getId());
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(physician);

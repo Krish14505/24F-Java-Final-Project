@@ -28,6 +28,7 @@ import java.util.Set;
 @Entity
 @Table(name = "security_user")
 @NamedQuery(name="SecurityUser.userByName", query = "SELECT u FROM SecurityUser u LEFT JOIN FETCH u.physician WHERE u.username =: param1")
+@NamedQuery(name="SecurityUser.findByPhysicianId", query= "SELECT u FROM SecurityUser u WHERE u.physician.id = :physicianId")
 public class SecurityUser implements Serializable, Principal {
     /** Explicit set serialVersionUID */
     private static final long serialVersionUID = 1L;
