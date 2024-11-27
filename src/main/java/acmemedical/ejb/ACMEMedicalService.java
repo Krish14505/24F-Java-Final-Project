@@ -77,10 +77,12 @@ public class ACMEMedicalService implements Serializable {
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
 
     public List<Physician> getAllPhysicians() {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Physician> cq = cb.createQuery(Physician.class);
-        cq.select(cq.from(Physician.class));
-        return em.createQuery(cq).getResultList();
+//        CriteriaBuilder cb = em.getCriteriaBuilder();
+//        CriteriaQuery<Physician> cq = cb.createQuery(Physician.class);
+//        cq.select(cq.from(Physician.class));
+//        return em.createQuery(cq).getResultList();
+        TypedQuery<Physician> query = em.createNamedQuery(Physician.ALL_PHYSICIAN_QUERY_NAME, Physician.class);
+        return query.getResultList();
     }
 
     public Physician getPhysicianById(int id) {
