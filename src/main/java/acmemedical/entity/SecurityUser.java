@@ -7,7 +7,9 @@
  */
 package acmemedical.entity;
 
+import acmemedical.rest.serializer.SecurityRoleSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -86,7 +88,7 @@ public class SecurityUser implements Serializable, Principal {
     }
 
     // TODO SU07 - Setup custom JSON serializer
-    @JsonIgnore // prevents infinite recursion during serialization
+    @JsonSerialize(using= SecurityRoleSerializer.class)
     public Set<SecurityRole> getRoles() {
         return roles;
     }
