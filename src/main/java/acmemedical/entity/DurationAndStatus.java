@@ -101,3 +101,9 @@ public class DurationAndStatus implements Serializable {
 	}
 
 }
+
+/**
+ * this program is used to extend the capability of the MedicalTraining class to make sure to persist the
+ * starting and ending and active status of each training
+ *
+ */
