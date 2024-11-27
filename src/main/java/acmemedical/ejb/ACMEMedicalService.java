@@ -21,7 +21,7 @@ import static acmemedical.utility.MyConstants.PROPERTY_SALT_SIZE;
 import static acmemedical.utility.MyConstants.PU_NAME;
 import static acmemedical.utility.MyConstants.USER_ROLE;
 //import static acmemedical.entity.Physician.ALL_PHYSICIANS_QUERY_NAME;
-//import static acmemedical.entity.MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME;
+import static acmemedical.entity.MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME;
 import static acmemedical.entity.MedicalSchool.IS_DUPLICATE_QUERY_NAME;
 import static acmemedical.entity.MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME;
 
@@ -185,7 +185,7 @@ public class ACMEMedicalService implements Serializable {
     
     public List<MedicalSchool> getAllMedicalSchools() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<MedicalSchool> cq = cb.createQuery(MedicalSchool.class);
+        CriteriaQuery<MedicalSchool> cq = cb.createQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME,MedicalSchool.class);
         cq.select(cq.from(MedicalSchool.class));
         return em.createQuery(cq).getResultList();
     }
