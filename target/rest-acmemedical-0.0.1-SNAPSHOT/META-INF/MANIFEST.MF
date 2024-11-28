@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
-Build-Jdk-Spec: 17
-Created-By: Maven Integration for Eclipse
+Created-By: IntelliJ IDEA
+Built-By: krish
+Build-Jdk: Oracle OpenJDK 21.0.2
 

@@ -28,7 +28,7 @@ import org.hibernate.annotations.Fetch;
 //Added the NamedQuery for the ACMEMedicalService class to fetch all the training
 @NamedQuery(name=MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME, query="SELECT mt FROM MedicalTraining mt")
 
-@NamedQuery(name = , query = "SELECT COUNT(mt) FROM MedicalTraining mt WHERE mt.id = :param1")
+@NamedQuery(name = MedicalTraining.IS_DUPLICATE_TRAINING, query = "SELECT COUNT(mt) FROM MedicalTraining mt WHERE mt.id = :param1")
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
