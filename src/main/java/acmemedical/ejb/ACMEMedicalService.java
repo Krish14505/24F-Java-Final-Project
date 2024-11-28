@@ -464,9 +464,49 @@ public class ACMEMedicalService implements Serializable {
     }
 
     /*
-    *   The Following method will be used for
+    *   The Following method will be used for Prescription
     */
 
+    public List<Prescription> getAllPrescriptions() {
+        TypedQuery<Prescription> query = em.createNamedQuery("Prescription.findAll", Prescription.class);
+        return query.getResultList();
+    }
+
+    public Prescription getPrescriptionById(int id) {
+        TypedQuery<Prescription> query = em.createNamedQuery("Prescription.findById", Prescription.class);
+        query.setParameter("param1", id);
+        return query.getSingleResult();
+    }
+
+    @Transactional
+    public Prescription persistPrescription(Prescription newPrescription) {
+        em.persist(newPrescription);
+        return newPrescription;
+    }
+
+    @Transactional
+    public Prescription updatePrescription(int id, Prescription updatedPrescription) {
+        Prescription prescriptionToBeUpdated = getPrescriptionById(id);
+        if (prescriptionToBeUpdated != null) {
+            em.merge(updatedPrescription);
+            em.flush();
+        }
+        return prescriptionToBeUpdated;
+    }
+
+    public boolean isDuplicatedPrescription(Prescription newPrescription) {
+        TypedQuery<Long> query = em.createNamedQuery("Prescription.isDuplicate", Long.class);
+        query.setParameter("param1", newPrescription.getId());
+        return query.getSingleResult() >= 1;
+    }
+
+    @Transactional
+    public void deletePrescription(int id) {
+        Prescription prescription = getPrescriptionById(id);
+        if (prescription != null) {
+            em.remove(prescription);
+        }
+    }
 
 
 

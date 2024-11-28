@@ -30,6 +30,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "prescription")
 @Access(AccessType.FIELD)
+//Add the Nm
 @NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p")
 public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implements Serializable {
 	private static final long serialVersionUID = 1L;
