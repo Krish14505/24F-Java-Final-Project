@@ -383,9 +383,16 @@ public class ACMEMedicalService implements Serializable {
        return mt;
     }
 
+    /**
+     * This method is used to check the persisting record has to be unique that should not be existed!
+     * @param newTraining newTraining instance ready to be persisted to the database.
+     * @return either true or false
+     */
     public boolean isDuplicatedTraining(MedicalTraining newTraining){
         TypedQuery<Long> query = em.createNamedQuery(IS_DUPLICATE_TRAINING, Long.class);
         query.setParameter(PARAM1,newTraining.getId());
         return query.getSingleResult() >= 1 ;
     }
+
+
 }
