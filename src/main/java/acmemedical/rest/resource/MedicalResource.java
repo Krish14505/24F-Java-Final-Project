@@ -11,6 +11,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.util.List;
+
 import static acmemedical.utility.MyConstants.*;
 
 @Path(MEDICINE_SUBRESOURCE_NAME)
