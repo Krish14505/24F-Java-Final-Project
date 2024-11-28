@@ -396,7 +396,7 @@ public class ACMEMedicalService implements Serializable {
      * @return patientList
      */
     public List<Patient> getAllPatients(){
-        TypedQuery<Patient> query = em.createNamedQuery("patient.findAll", Patient.class);
+        TypedQuery<Patient> query = em.createNamedQuery("Patient.findAll", Patient.class);
         return query.getResultList();
     }
 
@@ -407,7 +407,7 @@ public class ACMEMedicalService implements Serializable {
      * @return specific instance selected patient.
      */
     public Patient getPatientById(int id) {
-        TypedQuery<Patient> query = em.createNamedQuery("patient.findById", Patient.class);
+        TypedQuery<Patient> query = em.createNamedQuery("Patient.findById", Patient.class);
         query.setParameter(PARAM1, id);
         return query.getSingleResult();
     }
@@ -446,7 +446,7 @@ public class ACMEMedicalService implements Serializable {
      * @return boolean value
      */
     public boolean isDuplicatedPatient(Patient newPatient) {
-        TypedQuery<Long> query = em.createNamedQuery("patient.isDuplicate", Long.class);
+        TypedQuery<Long> query = em.createNamedQuery("Patient.isDuplicate", Long.class);
         query.setParameter(PARAM1, newPatient.getId());
         return query.getSingleResult() >= 1;
     }
