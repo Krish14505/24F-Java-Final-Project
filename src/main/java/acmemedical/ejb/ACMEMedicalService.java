@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import acmemedical.entity.*;
 import acmemedical.rest.resource.MedicalTrainingResource;
 import jakarta.ejb.Singleton;
+import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -45,15 +47,6 @@ import jakarta.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import acmemedical.entity.MedicalTraining;
-import acmemedical.entity.MedicalCertificate;
-import acmemedical.entity.Medicine;
-import acmemedical.entity.Prescription;
-import acmemedical.entity.SecurityRole;
-import acmemedical.entity.SecurityUser;
-import acmemedical.entity.Physician;
-import acmemedical.entity.MedicalSchool;
 
 
 @SuppressWarnings("unused")
@@ -393,6 +386,86 @@ public class ACMEMedicalService implements Serializable {
         query.setParameter(PARAM1,newTraining.getId());
         return query.getSingleResult() >= 1 ;
     }
+
+    /*
+     *  Now the following method will be used to do the CRUD functionality for the Patient Resource.
+    */
+
+    /**
+     * Method used to fetch all the patients stored in the database.
+     * @return patientList
+     */
+    public List<Patient> getAllPatients(){
+        TypedQuery<Patient> query = em.createNamedQuery("patient.findAll", Patient.class);
+        return query.getResultList();
+    }
+
+
+    /**
+     * Method will be used to get the specific Patient by id.
+     * @param id id of the patient
+     * @return specific instance selected patient.
+     */
+    public Patient getPatientById(int id) {
+        TypedQuery<Patient> query = em.createNamedQuery("patient.findById", Patient.class);
+        query.setParameter(PARAM1, id);
+        return query.getSingleResult();
+    }
+
+
+    /**
+     * method will be used to persist Patient
+     * @param newPatient newInstance of the patient
+     * @return newPatient
+     */
+    @Transactional
+    public Patient persistPatient(Patient newPatient) {
+        em.persist(newPatient);
+        return newPatient;
+    }
+
+    /**
+     * method used to update the patient
+     * @param id id of the patient
+     * @param updatingPatient updating the patient
+     * @return patientToBeUpdated.
+     */
+    @Transactional
+    public Patient updatePatient(int id, Patient updatingPatient) {
+        Patient patientToBeUpdated = getPatientById(id);
+        if (patientToBeUpdated != null) {
+            em.merge(updatingPatient);
+            em.flush();
+        }
+        return patientToBeUpdated;
+    }
+
+    /**
+     * Method that avoid inserting the same existing record.
+     * @param newPatient new adding instance of the patient.
+     * @return boolean value
+     */
+    public boolean isDuplicatedPatient(Patient newPatient) {
+        TypedQuery<Long> query = em.createNamedQuery("patient.isDuplicate", Long.class);
+        query.setParameter(PARAM1, newPatient.getId());
+        return query.getSingleResult() >= 1;
+    }
+
+    /**
+     * delete patient method
+     * @param id id of the patient
+     */
+    @Transactional
+    public void deletePatient(int id) {
+        Patient patient = getPatientById(id);
+        if(patient != null){
+            em.remove(patient);
+        }
+    }
+
+
+
+
 
 
 }
