@@ -23,6 +23,13 @@ import java.util.Set;
 @Entity
 //TODO PA02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "patient")
+
+//Adding the queries that will be used to Medical Service class which will be used for the PatientResources.
+@NamedQueries({
+		@NamedQuery(name="Patient.findAll", query="SELECT p FROM Patient p"),
+		@NamedQuery(name="Patient.findById", query="SELECT p FROM Patient p WHERE p.id = :param1"),
+		@NamedQuery(name="Patient.isDuplicate",query="SELECT COUNT(p) FROM Patient p WHERE p.id = :param1")
+})
 public class Patient extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 

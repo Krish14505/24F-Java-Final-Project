@@ -9,19 +9,7 @@ package acmemedical.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Access;
-import jakarta.persistence.AccessType;
-import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @SuppressWarnings("unused")
 /**
@@ -30,7 +18,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "prescription")
 @Access(AccessType.FIELD)
-@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p")
+//Add the NamedQueries for the medialService class
+@NamedQueries({
+	@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p"),
+	@NamedQuery(name= "Prescription.findByid",query = "SELECT p FROM Prescription p WHERE p.id = :param1"),
+		@NamedQuery(name="Prescription.isDuplicate",query="SELECT COUNT(p) FROM Prescription p WHERE p.id=:param1")
+})
 public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
