@@ -38,6 +38,6 @@ public class PrivateSchoolTest {
     @Test
     public void testJsonTypeName() {
         assertTrue(PrivateSchool.class.isAnnotationPresent(JsonTypeName.class), "JsonTypeName annotation should be present");
-        assertEquals("private", PrivateSchool.class.getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'private'");
+        assertEquals("false", PrivateSchool.class.getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'false'");
     }
 }

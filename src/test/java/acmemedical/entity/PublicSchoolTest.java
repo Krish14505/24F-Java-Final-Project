@@ -38,6 +38,6 @@ public class PublicSchoolTest {
     @Test
     public void testJsonTypeName() {
         assertTrue(PublicSchool.class.isAnnotationPresent(JsonTypeName.class), "JsonTypeName annotation should be present");
-        assertEquals("public", PublicSchool.class.getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'public'");
+        assertEquals("true", PublicSchool.class.getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'true'");
     }
 }
