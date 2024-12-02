@@ -64,7 +64,7 @@ public class MedicineResource {
     @Path(RESOURCE_PATH_ID_PATH)
     public Response deleteMedicine(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
         LOG.debug("deleting medicine by id: {}", id);
-        service.deleteMedicine(id);
+        service.deleteMedicineByid(id);
         return Response.noContent().build();
     }
 }
