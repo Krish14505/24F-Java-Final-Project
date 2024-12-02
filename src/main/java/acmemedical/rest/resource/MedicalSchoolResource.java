@@ -8,6 +8,7 @@
 package acmemedical.rest.resource;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
@@ -59,6 +60,7 @@ public class MedicalSchoolResource {
     
     @GET
     // TODO MSR01 - Specify the roles allowed for this method
+    @RolesAllowed({ADMIN_ROLE,USER_ROLE})
     @Path("/{medicalSchoolId}")
     public Response getMedicalSchoolById(@PathParam("medicalSchoolId") int medicalSchoolId) {
         LOG.debug("Retrieving medical school with id = {}", medicalSchoolId);
@@ -69,12 +71,21 @@ public class MedicalSchoolResource {
 
     @DELETE
     // TODO MSR02 - Specify the roles allowed for this method
+    @RolesAllowed({ADMIN_ROLE,USER_ROLE})
     @Path("/{medicalSchoolId}")
     public Response deleteMedicalSchool(@PathParam("medicalSchoolId") int msId) {
-        LOG.debug("Deleting medical school with id = {}", msId);
+       LOG.debug("Deleting medical school with id = {}", msId);
+
+       //crate JSOn for authorised access to the request
+        if(!sc.isCallerInRole(ADMIN_ROLE)) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity(Map.of(
+                            "status-code",403,
+                            "reason-phrase","Forbidden"
+                    )).build();
+        }
         MedicalSchool sc = service.deleteMedicalSchool(msId);
-        Response response = Response.ok(sc).build();
-        return response;
+        return Response.noContent().build();
     }
     
     // Please try to understand and test the below methods:
@@ -82,6 +93,14 @@ public class MedicalSchoolResource {
     @POST
     public Response addMedicalSchool(MedicalSchool newMedicalSchool) {
         LOG.debug("Adding a new medical school = {}", newMedicalSchool);
+        if(!sc.isCallerInRole(ADMIN_ROLE)) {
+            return Response.status(Status.FORBIDDEN)
+                    .entity(Map.of(
+                            "status-code",403,
+                            "return-phrase","Forbidden"
+                    ))
+                    .build();
+        }
         if (service.isDuplicated(newMedicalSchool)) {
             HttpErrorResponse err = new HttpErrorResponse(Status.CONFLICT.getStatusCode(), "Entity already exists");
             return Response.status(Status.CONFLICT).entity(err).build();
@@ -90,6 +109,7 @@ public class MedicalSchoolResource {
             MedicalSchool tempMedicalSchool = service.persistMedicalSchool(newMedicalSchool);
             return Response.ok(tempMedicalSchool).build();
         }
+
     }
 
     @RolesAllowed({ADMIN_ROLE})
