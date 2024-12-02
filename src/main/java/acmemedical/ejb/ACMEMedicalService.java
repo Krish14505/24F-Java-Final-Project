@@ -514,6 +514,7 @@ public class ACMEMedicalService implements Serializable {
             prescriptions.forEach(prescription -> {
                em.remove(prescription);
             });
+
             em.remove(medicine);
         }
     }
