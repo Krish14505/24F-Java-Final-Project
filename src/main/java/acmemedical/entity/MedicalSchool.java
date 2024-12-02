@@ -6,6 +6,8 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
@@ -20,25 +22,25 @@ import java.util.Set;
  */
 //TODO MS01 - Add the missing annotations.
 	@Entity
-	@Access(AccessType.FIELD)
+	@Table(name = "medical_school")
+
 //TODO MS02 - MedicalSchool has subclasses PublicSchool and PrivateSchool.  Look at Week 9 slides for InheritanceType.
 	@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 //TODO MS03 - Do we need a mapped super class?  If so, which one?
-	@DiscriminatorColumn(name = "school_type",discriminatorType = DiscriminatorType.STRING)
-	@Table(name = "medical_school")
+	@DiscriminatorColumn(name = "public",discriminatorType = DiscriminatorType.INTEGER)
+	// Add the NamedQuery to resolve the issue of isDuplicate() method in service class
+			@NamedQuery(name= MedicalSchool.IS_DUPLICATE_QUERY_NAME, query = "SELECT COUNT(ms) FROM MedicalSchool ms WHERE lower(ms.name) = lower(:param1) ")
+			@NamedQuery(name= MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME, query = "SELECT ms FROM MedicalSchool ms  WHERE ms.id = :id")
+			@NamedQuery(name= MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME, query="SELECT distinct ms FROM MedicalSchool ms")
+
 
 //TODO MS04 - Add in JSON annotations to indicate different sub-classes of MedicalSchool
-	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY,property = "type")
+	@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,property = "isPublic")
 	@JsonSubTypes( {
-			@JsonSubTypes.Type(value=PublicSchool.class, name = "public"),
-			@JsonSubTypes.Type(value= PrivateSchool.class, name = "private")
+			@JsonSubTypes.Type(value=PublicSchool.class, name = "true"),
+			@JsonSubTypes.Type(value= PrivateSchool.class, name = "false")
 	})
-	// Add the NamedQuery to resolve the issue of isDuplicate() method in service class
-	@NamedQueries({
-		@NamedQuery(name= MedicalSchool.IS_DUPLICATE_QUERY_NAME, query = "SELECT COUNT(ms) FROM MedicalSchool ms WHERE ms.name = :param1"),
-			@NamedQuery(name= MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME, query = "SELECT distinct ms FROM MedicalSchool ms LEFT JOIN FETCH ms.medicalTrainings WHERE ms.id = :param1"),
-			@NamedQuery(name= MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME, query="SELECT distinct ms FROM MedicalSchool ms LEFT JOIN FETCH ms.medicalTrainings")
-	})
+	@AttributeOverride(name="id",column= @Column(name = "school_id"))
 public abstract class MedicalSchool extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -53,15 +55,17 @@ public abstract class MedicalSchool extends PojoBase implements Serializable {
 	public static final String 	ALL_MEDICAL_SCHOOLS_QUERY_NAME = "MedicalSchool.findAll";
 
 	// TODO MS05 - Add the missing annotations.
+	@Basic(optional=false)
 	@Column(name = "name",nullable = false)
 	private String name;
 
 	// TODO MS06 - Add the 1:M annotation.  What should be the cascade and fetch types?
-	@OneToMany(mappedBy = "school", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "school", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private Set<MedicalTraining> medicalTrainings = new HashSet<>();
 
 	// TODO MS07 - Add missing annotation.
-	@Column(name = "is_public")
+	@Column(name = "public", insertable=false, updatable=false)
 	private boolean isPublic;
 
 	public MedicalSchool() {
