@@ -7,6 +7,7 @@
  */
 package acmemedical.entity;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -21,14 +22,17 @@ public class DurationAndStatus implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// TODO DS02 - Add annotations
+	@Basic
 	@Column(name = "start_date", nullable = false)
 	private LocalDateTime startDate;
 	
 	// TODO DS03 - Add annotations
+	@Basic
 	@Column(name = "end_date", nullable = false)
 	private LocalDateTime endDate;
 
 	// TODO DS04 - Add annotations
+	@Basic
 	@Column(name = "active", nullable = false)
 	private byte active;
 
