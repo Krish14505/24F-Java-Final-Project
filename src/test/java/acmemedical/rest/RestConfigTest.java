@@ -4,6 +4,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.ws.rs.ApplicationPath;
+
 import java.util.Map;
 
 /**
@@ -34,7 +37,7 @@ public class RestConfigTest {
     public void testApplicationPath() {
         ApplicationPath applicationPathAnnotation = RestConfig.class.getAnnotation(ApplicationPath.class);
         assertNotNull(applicationPathAnnotation, "RestConfig should have an @ApplicationPath annotation");
-        assertEquals("/api", applicationPathAnnotation.value(), "The @ApplicationPath value should be '/api'");
+        assertEquals("/api/v1", applicationPathAnnotation.value(), "The @ApplicationPath value should be '</api/v1>'");
     }
 
     /**
@@ -46,6 +49,6 @@ public class RestConfigTest {
         assertNotNull(declareRolesAnnotation, "RestConfig should have a @DeclareRoles annotation");
 
         String[] roles = declareRolesAnnotation.value();
-        assertArrayEquals(new String[]{"USER", "ADMIN"}, roles, "Declared roles should include 'USER' and 'ADMIN'");
+        assertArrayEquals(new String[]{"USER_ROLE", "ADMIN_ROLE"}, roles, "Declared roles should include 'USER_ROLE' and 'ADMIN_ROLE'");
     }
 }
