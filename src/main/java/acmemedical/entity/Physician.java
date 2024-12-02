@@ -6,6 +6,8 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -21,31 +23,40 @@ import java.util.Set;
 @Entity
 //TODO PH02 - Do we need a mapped super class? If so, which one?
 @Table(name = "Physician")
-@NamedQuery(name=Physician.ALL_PHYSICIAN_QUERY_NAME, query= "SELECT p FROM Physician p")
+@NamedQuery(name="Physician.findAll", query= "SELECT p FROM Physician p")
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	//variable used to reference the select query
 	public static final String ALL_PHYSICIAN_QUERY_NAME = "Physician.findALl";
-    public Physician() {
+
+	public Physician() {
     	super();
     }
 
 	// TODO PH03 - Add annotations.
+	@Basic(optional = false, nullable = false , length=60)
 	@Column(name = "first_name")
 	private String firstName;
 
 	// TODO PH04 - Add annotations.
-	@Column(name = "last_name")
+	@Basic(optional = false)
+	@Column(name = "last_name",nullable = false,length = 60)
 	private String lastName;
 
 	// TODO PH05 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@JsonIgnore
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<MedicalCertificate> medicalCertificates = new HashSet<>();
 
 	// TODO PH06 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@JsonBackReference("physician-prescriptions")
 	@OneToMany(mappedBy = "physician", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<Prescription> prescriptions = new HashSet<>();
+
+	@JsonBackReference("physician-user")
+	@OneToOne(mappedBy="physician")
+	private SecurityUser securityUser;
 
 	public String getFirstName() {
 		return firstName;
