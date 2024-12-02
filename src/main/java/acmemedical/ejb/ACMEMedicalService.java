@@ -7,8 +7,7 @@
  */
 package acmemedical.ejb;
 
-import static acmemedical.entity.MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME;
-import static acmemedical.entity.MedicalTraining.IS_DUPLICATE_TRAINING;
+
 import static acmemedical.utility.MyConstants.DEFAULT_KEY_SIZE;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ALGORITHM;
 import static acmemedical.utility.MyConstants.DEFAULT_PROPERTY_ITERATIONS;
@@ -22,8 +21,6 @@ import static acmemedical.utility.MyConstants.PROPERTY_KEY_SIZE;
 import static acmemedical.utility.MyConstants.PROPERTY_SALT_SIZE;
 import static acmemedical.utility.MyConstants.PU_NAME;
 import static acmemedical.utility.MyConstants.USER_ROLE;
-//import static acmemedical.entity.Physician.ALL_PHYSICIANS_QUERY_NAME;
-import static acmemedical.entity.MedicalSchool.ALL_MEDICAL_SCHOOLS_QUERY_NAME;
 import static acmemedical.entity.MedicalSchool.IS_DUPLICATE_QUERY_NAME;
 import static acmemedical.entity.MedicalSchool.SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME;
 
@@ -40,6 +37,8 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.security.enterprise.identitystore.Pbkdf2PasswordHash;
 import jakarta.transaction.Transactional;
 
@@ -63,20 +62,17 @@ public class ACMEMedicalService implements Serializable {
     
     @Inject
     protected Pbkdf2PasswordHash pbAndjPasswordHash;
-//    @Inject
-//    private MedicalTrainingResource medicalTrainingResource;
+
 
     /**
      * The method that is used to fetch all the physicians(security users)
      * @return physician
      */
     public List<Physician> getAllPhysicians() {
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<Physician> cq = cb.createQuery(Physician.class);
-//        cq.select(cq.from(Physician.class));
-//        return em.createQuery(cq).getResultList();
-        TypedQuery<Physician> query = em.createNamedQuery(Physician.ALL_PHYSICIAN_QUERY_NAME, Physician.class);
-        return query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Physician> cq = cb.createQuery(Physician.class);
+        cq.select(cq.from(Physician.class));
+        return em.createQuery(cq).getResultList();
     }
 
     /**
@@ -193,7 +189,7 @@ public class ACMEMedicalService implements Serializable {
                so that when we remove it, the relationship from SECURITY_USER table
                is not dangling
             */
-            findUser.setParameter("physicianId",physician.getId());
+            findUser.setParameter("physicianId",id);
             SecurityUser sUser = findUser.getSingleResult();
             em.remove(sUser);
             em.remove(physician);
@@ -205,12 +201,11 @@ public class ACMEMedicalService implements Serializable {
      * @return list of query result list
      */
     public List<MedicalSchool> getAllMedicalSchools() {
-//        CriteriaBuilder cb = em.getCriteriaBuilder();
-//        CriteriaQuery<MedicalSchool> cq = cb.createQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME,MedicalSchool.class);
-//        cq.select(cq.from(MedicalSchool.class));
-//        return em.createQuery(cq).getResultList();
-        TypedQuery<MedicalSchool> query = em.createNamedQuery(ALL_MEDICAL_SCHOOLS_QUERY_NAME, MedicalSchool.class);
-        return query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<MedicalSchool> cq = cb.createQuery(MedicalSchool.class);
+        cq.select(cq.from(MedicalSchool.class));
+        return em.createQuery(cq).getResultList();
+
     }
 
     // Why not use the build-in em.find?  The named query SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME
@@ -223,7 +218,7 @@ public class ACMEMedicalService implements Serializable {
      */
     public MedicalSchool getMedicalSchoolById(int id) {
         TypedQuery<MedicalSchool> specificMedicalSchoolQuery = em.createNamedQuery(SPECIFIC_MEDICAL_SCHOOL_QUERY_NAME, MedicalSchool.class);
-        specificMedicalSchoolQuery.setParameter(PARAM1, id);
+        specificMedicalSchoolQuery.setParameter("id", id);
         return specificMedicalSchoolQuery.getSingleResult();
     }
     
@@ -276,7 +271,7 @@ public class ACMEMedicalService implements Serializable {
      */
     public boolean isDuplicated(MedicalSchool newMedicalSchool) {
         TypedQuery<Long> allMedicalSchoolsQuery = em.createNamedQuery(IS_DUPLICATE_QUERY_NAME, Long.class);
-        allMedicalSchoolsQuery.setParameter(PARAM1, newMedicalSchool.getName());
+        allMedicalSchoolsQuery.setParameter("param1", newMedicalSchool.getName());
         return (allMedicalSchoolsQuery.getSingleResult() >= 1);
     }
 
@@ -354,36 +349,36 @@ public class ACMEMedicalService implements Serializable {
      * get All the medicalTraining with the list
      * @return result list consisting of MedicalTraining records
      */
-    public List<MedicalTraining> getAllMedicalTrainings(){
-        TypedQuery<MedicalTraining>  query = em.createNamedQuery(ALL_MEDICAL_TRAINING_QUERY_NAME,MedicalTraining.class);
-        return query.getResultList();
-    }
+//    public List<MedicalTraining> getAllMedicalTrainings(){
+//        TypedQuery<MedicalTraining>  query = em.createNamedQuery(ALL_MEDICAL_TRAINING_QUERY_NAME,MedicalTraining.class);
+//        return query.getResultList();
+//    }
 
     /**
      * delete the medicalTraining instance
      * @param id id of the training
      * @return MedicalTraining
      */
-    @Transactional
-    public MedicalTraining deleteMedicalTraining(int id) {
-
-       MedicalTraining mt = getMedicalTrainingById(id);
-       if(mt != null){
-           em.remove(mt);
-       }
-       return mt;
-    }
+//    @Transactional
+//    public MedicalTraining deleteMedicalTraining(int id) {
+//
+//       MedicalTraining mt = getMedicalTrainingById(id);
+//       if(mt != null){
+//           em.remove(mt);
+//       }
+//       return mt;
+//    }
 
     /**
      * This method is used to check the persisting record has to be unique that should not be existed!
      * @param newTraining newTraining instance ready to be persisted to the database.
      * @return either true or false
      */
-    public boolean isDuplicatedTraining(MedicalTraining newTraining){
-        TypedQuery<Long> query = em.createNamedQuery(IS_DUPLICATE_TRAINING, Long.class);
-        query.setParameter(PARAM1,newTraining.getId());
-        return query.getSingleResult() >= 1 ;
-    }
+//    public boolean isDuplicatedTraining(MedicalTraining newTraining){
+//        TypedQuery<Long> query = em.createNamedQuery(IS_DUPLICATE_TRAINING, Long.class);
+//        query.setParameter(PARAM1,newTraining.getId());
+//        return query.getSingleResult() >= 1 ;
+//    }
 
     /*
      *  Now the following method will be used to do the CRUD functionality for the Patient Resource.
@@ -394,8 +389,10 @@ public class ACMEMedicalService implements Serializable {
      * @return patientList
      */
     public List<Patient> getAllPatients(){
-        TypedQuery<Patient> query = em.createNamedQuery("Patient.findAll", Patient.class);
-        return query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Patient> cq = cb.createQuery(Patient.class);
+        cq.select(cq.from(Patient.class));
+        return em.createQuery(cq).getResultList();
     }
 
 
@@ -405,9 +402,7 @@ public class ACMEMedicalService implements Serializable {
      * @return specific instance selected patient.
      */
     public Patient getPatientById(int id) {
-        TypedQuery<Patient> query = em.createNamedQuery("Patient.findById", Patient.class);
-        query.setParameter(PARAM1, id);
-        return query.getSingleResult();
+        return em.find(Patient.class, id);
     }
 
 
@@ -428,81 +423,65 @@ public class ACMEMedicalService implements Serializable {
      * @param updatingPatient updating the patient
      * @return patientToBeUpdated.
      */
-    @Transactional
-    public Patient updatePatient(int id, Patient updatingPatient) {
-        Patient patientToBeUpdated = getPatientById(id);
-        if (patientToBeUpdated != null) {
-            em.merge(updatingPatient);
-            em.flush();
-        }
-        return patientToBeUpdated;
-    }
+//    @Transactional
+//    public Patient updatePatient(int id, Patient updatingPatient) {
+//        Patient patientToBeUpdated = getPatientById(id);
+//        if (patientToBeUpdated != null) {
+//            em.merge(updatingPatient);
+//            em.flush();
+//        }
+//        return patientToBeUpdated;
+//    }
 
     /**
      * Method that avoid inserting the same existing record.
      * @param newPatient new adding instance of the patient.
      * @return boolean value
      */
-    public boolean isDuplicatedPatient(Patient newPatient) {
-        TypedQuery<Long> query = em.createNamedQuery("Patient.isDuplicate", Long.class);
-        query.setParameter(PARAM1, newPatient.getId());
-        return query.getSingleResult() >= 1;
-    }
+//    public boolean isDuplicatedPatient(Patient newPatient) {
+//        TypedQuery<Long> query = em.createNamedQuery("Patient.isDuplicate", Long.class);
+//        query.setParameter(PARAM1, newPatient.getId());
+//        return query.getSingleResult() >= 1;
+//    }
 
     /**
      * delete patient method
      * @param id id of the patient
      */
     @Transactional
-    public void deletePatient(int id) {
+    public void deletePatientById(int id) {
         Patient patient = getPatientById(id);
-        if(patient != null){
+        if (patient != null) {
+            em.refresh(patient);
+
+            // Get all prescriptions for this patient
+            Set<Prescription> prescriptions = patient.getPrescriptions();
+
+            // For each prescription
+            prescriptions.forEach(prescription -> {
+                // If there's a medical certificate linked to the physician who wrote the prescription
+                Physician physician = prescription.getPhysician();
+                if (physician != null) {
+                    TypedQuery<MedicalCertificate> certQuery = em.createQuery(
+                            "SELECT mc FROM MedicalCertificate mc WHERE mc.physician.id = :physicianId",
+                            MedicalCertificate.class
+                    );
+                    certQuery.setParameter("physicianId", physician.getId());
+                    List<MedicalCertificate> certificates = certQuery.getResultList();
+
+                    // // Null out the physician reference in certificates
+                    // certificates.forEach(cert -> {
+                    //     cert.setMedicineForPhysicianPatient(null);
+                    //     em.merge(cert);
+                    // });
+                }
+
+                // Remove the prescription
+                em.remove(prescription);
+            });
+
+            // Finally remove the patient
             em.remove(patient);
-        }
-    }
-
-    /*
-    *   The Following method will be used for Prescription
-    */
-
-    public List<Prescription> getAllPrescriptions() {
-        TypedQuery<Prescription> query = em.createNamedQuery("Prescription.findAll", Prescription.class);
-        return query.getResultList();
-    }
-
-    public Prescription getPrescriptionById(int id) {
-        TypedQuery<Prescription> query = em.createNamedQuery("Prescription.findById", Prescription.class);
-        query.setParameter("param1", id);
-        return query.getSingleResult();
-    }
-
-    @Transactional
-    public Prescription persistPrescription(Prescription newPrescription) {
-        em.persist(newPrescription);
-        return newPrescription;
-    }
-
-    @Transactional
-    public Prescription updatePrescription(int id, Prescription updatedPrescription) {
-        Prescription prescriptionToBeUpdated = getPrescriptionById(id);
-        if (prescriptionToBeUpdated != null) {
-            em.merge(updatedPrescription);
-            em.flush();
-        }
-        return prescriptionToBeUpdated;
-    }
-
-    public boolean isDuplicatedPrescription(Prescription newPrescription) {
-        TypedQuery<Long> query = em.createNamedQuery("Prescription.isDuplicate", Long.class);
-        query.setParameter("param1", newPrescription.getId());
-        return query.getSingleResult() >= 1;
-    }
-
-    @Transactional
-    public void deletePrescription(int id) {
-        Prescription prescription = getPrescriptionById(id);
-        if (prescription != null) {
-            em.remove(prescription);
         }
     }
 
@@ -510,14 +489,14 @@ public class ACMEMedicalService implements Serializable {
      * The following methods are for the MedicalResources
      */
     public List<Medicine> getAllMedicines() {
-        TypedQuery<Medicine> query = em.createNamedQuery("Medicine.findAll", Medicine.class);
-        return query.getResultList();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Medicine> cq = cb.createQuery(Medicine.class);
+        cq.select(cq.from(Medicine.class));
+        return em.createQuery(cq).getResultList();
     }
 
     public Medicine getMedicineById(int id) {
-        TypedQuery<Medicine> query = em.createNamedQuery("Medicine.findById", Medicine.class);
-        query.setParameter("param1", id);
-        return query.getSingleResult();
+        return em.find(Medicine.class, id);
     }
 
     @Transactional
@@ -526,26 +505,15 @@ public class ACMEMedicalService implements Serializable {
         return newMedicine;
     }
 
-    @Transactional
-    public Medicine updateMedicine(int id, Medicine updatedMedicine) {
-        Medicine medicineToBeUpdated = getMedicineById(id);
-        if (medicineToBeUpdated != null) {
-            em.merge(updatedMedicine);
-            em.flush();
-        }
-        return medicineToBeUpdated;
-    }
 
-    public boolean isDuplicatedMedicine(Medicine newMedicine) {
-        TypedQuery<Long> query = em.createNamedQuery("Medicine.isDuplicate", Long.class);
-        query.setParameter("param1", newMedicine.getId());
-        return query.getSingleResult() >= 1;
-    }
-
-    @Transactional
-    public void deleteMedicine(int id) {
+    public void deleteMedicineByid(int id) {
         Medicine medicine = getMedicineById(id);
         if (medicine != null) {
+            em.refresh(medicine);
+            Set<Prescription> prescriptions= medicine.getPrescriptions();
+            prescriptions.forEach(prescription -> {
+               em.remove(prescription);
+            });
             em.remove(medicine);
         }
     }
