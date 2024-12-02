@@ -9,6 +9,7 @@ package acmemedical.entity;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @SuppressWarnings("unused")
@@ -19,11 +20,7 @@ import jakarta.persistence.*;
 @Table(name = "prescription")
 @Access(AccessType.FIELD)
 //Add the NamedQueries for the medialService class
-@NamedQueries({
-	@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p"),
-	@NamedQuery(name= "Prescription.findByid",query = "SELECT p FROM Prescription p WHERE p.id = :param1"),
-		@NamedQuery(name="Prescription.isDuplicate",query="SELECT COUNT(p) FROM Prescription p WHERE p.id=:param1")
-})
+@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p")
 public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,19 +30,20 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 
 	// @MapsId is used to map a part of composite key to an entity.
 	@MapsId("physicianId")
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST}, optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "physician_id", referencedColumnName = "id", nullable = false)
+	@JsonBackReference("physician-prescriptions")
 	private Physician physician;
 
 	//TODO PR01 - Add missing annotations.  Similar to physician, this field is a part of the composite key of this entity.  What should be the cascade and fetch types?  Reference to a patient is not optional.
 	@MapsId("patientId")
 	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	private Patient patient;
 
 	//TODO PR02 - Add missing annotations.  What should be the cascade and fetch types?
 	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
+	@JoinColumn(name = "medicine_id", referencedColumnName = "medicine_id")
 	private Medicine medicine;
 
 	@Column(name = "number_of_refills")

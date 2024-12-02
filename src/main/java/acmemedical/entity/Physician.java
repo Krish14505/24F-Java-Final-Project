@@ -35,8 +35,8 @@ public class Physician extends PojoBase implements Serializable {
     }
 
 	// TODO PH03 - Add annotations.
-	@Basic(optional = false, nullable = false , length=60)
-	@Column(name = "first_name")
+	@Basic(optional = false)
+	@Column(name = "first_name", nullable = false , length=60)
 	private String firstName;
 
 	// TODO PH04 - Add annotations.
