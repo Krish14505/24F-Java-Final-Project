@@ -6,6 +6,7 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -21,8 +22,10 @@ import java.io.Serializable;
 @Entity
 //TODO MC02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "medical_certificate")
+@NamedQuery(name="MedicalCertificate.findAll", query="SELECT mc FROM MedicalCertificate mc")
 //added the NamedQuery to find the specific MedicalCertificate
-@NamedQuery(name="MedicalCertificate.findById", query="SELECT mc FROM MedicalCertificate mc WHERE mc.id = :param1")
+@NamedQuery(name= MedicalCertificate.ID_CARD_QUERY_NAME, query="SELECT mc FROM MedicalCertificate mc WHERE mc.id = :id")
+@AttributeOverride(name="id", column=@Column(name = "certificate_id"))
 public class MedicalCertificate extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,18 +33,19 @@ public class MedicalCertificate extends PojoBase implements Serializable {
 	public static final String ID_CARD_QUERY_NAME = "MedicalCertificate.findByIdCard";
 
 	// TODO MC03 - Add annotations for 1:1 mapping.  What should be the cascade and fetch types?
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "medical_training_id", referencedColumnName = "id", nullable = false)
+	@JsonManagedReference("certificate=training")
+	@OneToOne
+	@JoinColumn(name = "training_id")
 	private MedicalTraining medicalTraining;
 
 	// TODO MC04 - Add annotations for M:1 mapping.  What should be the cascade and fetch types?
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "physician_id", referencedColumnName = "id",nullable = false)
-	private Physician owner;
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "physician_id")
+	private Physician physician;
 
 	// TODO MC05 - Add annotations.
-	@Basic(optional = false)
-	@Column(nullable = false)
+	@Basic
+	@Column(name = "signed")
 	private byte signed;
 
 	public MedicalCertificate() {
@@ -51,7 +55,7 @@ public class MedicalCertificate extends PojoBase implements Serializable {
 	public MedicalCertificate(MedicalTraining medicalTraining, Physician owner, byte signed) {
 		this();
 		this.medicalTraining = medicalTraining;
-		this.owner = owner;
+		this.physician = owner;
 		this.signed = signed;
 	}
 
@@ -64,11 +68,11 @@ public class MedicalCertificate extends PojoBase implements Serializable {
 	}
 
 	public Physician getOwner() {
-		return owner;
+		return physician;
 	}
 
 	public void setOwner(Physician owner) {
-		this.owner = owner;
+		this.physician = owner;
 	}
 
 	public byte getSigned() {
