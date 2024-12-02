@@ -8,6 +8,7 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -23,9 +24,9 @@ import java.util.Set;
 //TODO SR01 - Make this into JPA entity and add all necessary annotations inside the class.
 @Entity
 @Table(name = "security_role")
-//The following query has been used for the securityRole
 @NamedQueries({
-        @NamedQuery(name="SecurityRole.findByName", query="SELECT r FROM SecurityRole r WHERE r.roleName = :roleName")
+        @NamedQuery(name = "SecurityRole.findAll", query = "SELECT sr FROM SecurityRole sr"),
+        @NamedQuery(name = "SecurityRole.findByName", query = "SELECT sr FROM SecurityRole sr WHERE sr.roleName = :roleName")
 })
 public class SecurityRole implements Serializable {
     /** Explicit set serialVersionUID */
@@ -38,11 +39,14 @@ public class SecurityRole implements Serializable {
     protected int id;
     
     //TODO SR03 - Add annotations.
+    @Basic(optional = false)
     @Column(name = "role_name",nullable = false)
     protected String roleName;
     
     //TODO SR04 - Add annotations.
-    @ManyToMany(mappedBy = "roles")
+
+    @ManyToMany(mappedBy = "roles", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("roles")
     protected Set<SecurityUser> users = new HashSet<SecurityUser>();
 
     public SecurityRole() {
