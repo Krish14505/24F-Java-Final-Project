@@ -38,10 +38,12 @@ public abstract class PojoBase implements Serializable {
 	protected int version;
 
 	// TODO PB06 - Add missing annotations (hint, is this column on DB?).
+	@Basic
 	@Column(name = "created", nullable = false,updatable = false)
 	protected LocalDateTime created;
 
 	// TODO PB07 - Add missing annotations (hint, is this column on DB?).
+	@Basic
 	@Column(name = "updated")
 	protected LocalDateTime updated;
 
