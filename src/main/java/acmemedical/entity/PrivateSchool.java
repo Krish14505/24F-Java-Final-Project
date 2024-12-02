@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Entity
 @DiscriminatorValue("0") // 0 for private school
 //TODO PRSC02 - Is a JSON annotation needed here?
-@JsonTypeName("private")
+@JsonTypeName("false")
 public class PrivateSchool extends MedicalSchool implements Serializable {
 	private static final long serialVersionUID = 1L;
 
