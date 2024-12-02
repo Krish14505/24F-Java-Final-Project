@@ -35,9 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import acmemedical.entity.*;
-import acmemedical.rest.resource.MedicalTrainingResource;
 import jakarta.ejb.Singleton;
-import jakarta.enterprise.inject.Typed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
