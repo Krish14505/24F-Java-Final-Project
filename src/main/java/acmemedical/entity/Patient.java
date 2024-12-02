@@ -7,6 +7,7 @@
  */
 package acmemedical.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -25,43 +26,48 @@ import java.util.Set;
 @Table(name = "patient")
 
 //Adding the queries that will be used to Medical Service class which will be used for the PatientResources.
-@NamedQueries({
-		@NamedQuery(name="Patient.findAll", query="SELECT p FROM Patient p"),
-		@NamedQuery(name="Patient.findById", query="SELECT p FROM Patient p WHERE p.id = :param1"),
-		@NamedQuery(name="Patient.isDuplicate",query="SELECT COUNT(p) FROM Patient p WHERE p.id = :param1")
-})
+@NamedQuery(name="Patient.findAll", query="SELECT p FROM Patient p")
+@AttributeOverride(name="id", column=@Column(name = "patient_id"))
 public class Patient extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// TODO PA03 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
 	// TODO PA04 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "last_name")
 	private String lastName;
 
 	// TODO PA05 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "year", nullable = false)
 	private int year;
 
 	// TODO PA06 - Add missing annotations.
-	@Column(name = "address", nullable = false)
+	@Basic(optional = false)
+	@Column(name = "address", nullable = false, length = 255)
 	private String address;
 
 	// TODO PA07 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "height",nullable= false)
 	private int height;
 
 	// TODO PA08 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "width", nullable = false)
 	private int weight;
 
 	// TODO PA09 - Add missing annotations.
+	@Basic(optional = false)
 	@Column(name = "smoker", nullable = false)
 	private byte smoker;
 
 	// TODO PA10 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	@JsonIgnore
 	@OneToMany(mappedBy = "patient",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 	private Set<Prescription> prescriptions = new HashSet<>();
 
