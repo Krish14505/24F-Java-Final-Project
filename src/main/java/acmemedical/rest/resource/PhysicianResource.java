@@ -16,19 +16,13 @@ import static acmemedical.utility.MyConstants.RESOURCE_PATH_ID_PATH;
 import static acmemedical.utility.MyConstants.USER_ROLE;
 
 import java.util.List;
+import java.util.Map;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.SecurityContext;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.ForbiddenException;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -114,6 +108,22 @@ public class PhysicianResource {
         Medicine medicine = service.setMedicineForPhysicianPatient(physicianId, patientId, newMedicine);
         response = Response.ok(medicine).build();
         return response;
+    }
+
+    @DELETE
+    @Path(RESOURCE_PATH_ID_PATH)
+    public Response deletePhysician(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id) {
+        LOG.debug("deleting physician with id: {}", id);
+        //create JSON response for unauthorised access
+        if(!sc.isCallerInRole(ADMIN_ROLE)) {
+            return Response.status(Status.FORBIDDEN).
+            entity(Map.of(
+                    "status-code",403,
+                    "reason-phrase","Forbidden"
+            )).build();
+        }
+        service.deletePhysicianById(id);
+        return Response.noContent().build();
     }
     
 }
