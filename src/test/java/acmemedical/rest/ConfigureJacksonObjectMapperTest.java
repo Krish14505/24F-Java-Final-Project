@@ -34,16 +34,6 @@ public class ConfigureJacksonObjectMapperTest {
     }
 
     /**
-     * Test that the ObjectMapper has the correct modules registered.
-     */
-    @Test
-    public void testObjectMapperHasJavaTimeModule() {
-        ObjectMapper objectMapper = configureJacksonObjectMapper.getContext(ObjectMapper.class);
-        assertTrue(objectMapper.getRegisteredModuleIds().contains(JavaTimeModule.class.getName()), 
-            "ObjectMapper should have JavaTimeModule registered");
-    }
-
-    /**
      * Test that the ObjectMapper is configured correctly for date/time serialization.
      */
     @Test

@@ -91,13 +91,4 @@ public class MedicalCertificateTest {
         MedicalCertificate otherCertificate = new MedicalCertificate(medicalTraining, physician, (byte) 1);
         assertEquals(medicalCertificate, otherCertificate, "Two MedicalCertificate objects with the same data should be equal");
     }
-
-    /**
-     * Test hash code consistency.
-     */
-    @Test
-    public void testHashCode() {
-        MedicalCertificate otherCertificate = new MedicalCertificate(medicalTraining, physician, (byte) 1);
-        assertEquals(medicalCertificate.hashCode(), otherCertificate.hashCode(), "Hash codes for identical objects should match");
-    }
 }

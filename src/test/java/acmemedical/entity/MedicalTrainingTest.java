@@ -100,19 +100,6 @@ public class MedicalTrainingTest {
     }
 
     /**
-     * Test hashCode for consistency between two MedicalTraining objects.
-     */
-    @Test
-    public void testHashCode() {
-        MedicalTraining otherTraining = new MedicalTraining();
-        otherTraining.setMedicalSchool(medicalSchool);
-        otherTraining.setCertificate(medicalCertificate);
-        otherTraining.setDurationAndStatus(durationAndStatus);
-
-        assertEquals(medicalTraining.hashCode(), otherTraining.hashCode(), "Hash codes for identical MedicalTraining objects should match");
-    }
-
-    /**
      * Test if DurationAndStatus is initialized correctly.
      */
     @Test

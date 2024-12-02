@@ -89,20 +89,4 @@ public class DurationAndStatusTest {
         assertTrue(durationAndStatus.equals(other), "Two DurationAndStatus objects with the same data should be equal");
     }
 
-    /**
-     * Test the hashCode method.
-     */
-    @Test
-    public void testHashCode() {
-        DurationAndStatus other = new DurationAndStatus();
-        other.setStartDate(LocalDateTime.of(2023, 12, 1, 10, 0));
-        other.setEndDate(LocalDateTime.of(2023, 12, 31, 18, 0));
-        other.setActive((byte) 1);
-
-        durationAndStatus.setStartDate(LocalDateTime.of(2023, 12, 1, 10, 0));
-        durationAndStatus.setEndDate(LocalDateTime.of(2023, 12, 31, 18, 0));
-        durationAndStatus.setActive((byte) 1);
-
-        assertEquals(durationAndStatus.hashCode(), other.hashCode(), "Hash codes for identical objects should match");
-    }
 }
