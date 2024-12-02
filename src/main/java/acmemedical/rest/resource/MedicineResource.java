@@ -28,8 +28,8 @@ public class MedicineResource {
     @EJB
     protected ACMEMedicalService service;
 
-    @Inject
-    protected SecurityContext sc;
+//    @Inject
+//    protected SecurityContext sc;
 
     @GET
     @RolesAllowed({ADMIN_ROLE})
