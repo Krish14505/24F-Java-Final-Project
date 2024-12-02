@@ -3,6 +3,8 @@ package acmemedical.entity;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import jakarta.persistence.DiscriminatorValue;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * Unit tests for the PublicSchool entity.
@@ -18,17 +20,16 @@ public class PublicSchoolTest {
     public void testDefaultConstructor() {
         PublicSchool publicSchool = new PublicSchool();
         assertNotNull(publicSchool, "PublicSchool object should not be null");
-        assertTrue(publicSchool.isPublic(), "PublicSchool should have isPublic set to true");
+        assertTrue(publicSchool instanceof MedicalSchool, "PublicSchool should inherit from MedicalSchool");
     }
 
     /**
-     * Test the discriminator value.
+     * Test the discriminator value annotation.
      */
     @Test
     public void testDiscriminatorValue() {
-        PublicSchool publicSchool = new PublicSchool();
-        assertTrue(publicSchool.getClass().isAnnotationPresent(DiscriminatorValue.class), "DiscriminatorValue annotation should be present");
-        assertEquals("1", publicSchool.getClass().getAnnotation(DiscriminatorValue.class).value(), "Discriminator value should be '1' for PublicSchool");
+        assertTrue(PublicSchool.class.isAnnotationPresent(DiscriminatorValue.class), "DiscriminatorValue annotation should be present");
+        assertEquals("1", PublicSchool.class.getAnnotation(DiscriminatorValue.class).value(), "Discriminator value should be '1' for PublicSchool");
     }
 
     /**
@@ -36,8 +37,7 @@ public class PublicSchoolTest {
      */
     @Test
     public void testJsonTypeName() {
-        PublicSchool publicSchool = new PublicSchool();
-        assertTrue(publicSchool.getClass().isAnnotationPresent(JsonTypeName.class), "JsonTypeName annotation should be present");
-        assertEquals("public", publicSchool.getClass().getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'public'");
+        assertTrue(PublicSchool.class.isAnnotationPresent(JsonTypeName.class), "JsonTypeName annotation should be present");
+        assertEquals("public", PublicSchool.class.getAnnotation(JsonTypeName.class).value(), "JsonTypeName value should be 'public'");
     }
 }

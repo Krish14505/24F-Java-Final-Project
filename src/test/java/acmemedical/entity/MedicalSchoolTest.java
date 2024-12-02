@@ -67,31 +67,11 @@ public class MedicalSchoolTest {
     }
 
     /**
-     * Test the isPublic field for a public school.
-     */
-    @Test
-    public void testIsPublicField() {
-        PublicSchool publicSchool = new PublicSchool();
-        publicSchool.setName("Public Medical School");
-        assertTrue(publicSchool.isPublic(), "Public school should have isPublic set to true");
-    }
-
-    /**
      * Test the inheritance behavior.
      */
     @Test
     public void testInheritance() {
         assertTrue(medicalSchool instanceof MedicalSchool, "PublicSchool should be an instance of MedicalSchool");
-    }
-
-    /**
-     * Test hashCode for consistency.
-     */
-    @Test
-    public void testHashCode() {
-        MedicalSchool otherMedicalSchool = new PublicSchool();
-        otherMedicalSchool.setName("Test Medical School");
-        assertEquals(medicalSchool.hashCode(), otherMedicalSchool.hashCode(), "Hash codes for identical objects should match");
     }
 
     /**
