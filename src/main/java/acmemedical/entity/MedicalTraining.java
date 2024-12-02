@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.Fetch;
 
@@ -24,11 +25,10 @@ import org.hibernate.annotations.Fetch;
 //TODO MT02 - Do we need a mapped super class?  If so, which one?
 @Table(name = "medical_training")
 //Added the NamedQuery for the ACMEMedicalService class to fetch the specific Medical Training
-@NamedQuery(name=MedicalTraining.FIND_BY_ID , query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :param1")
+@NamedQuery(name=MedicalTraining.FIND_BY_ID , query="SELECT mt FROM MedicalTraining mt WHERE mt.id = :id")
 //Added the NamedQuery for the ACMEMedicalService class to fetch all the training
 @NamedQuery(name=MedicalTraining.ALL_MEDICAL_TRAINING_QUERY_NAME, query="SELECT mt FROM MedicalTraining mt")
-
-@NamedQuery(name = MedicalTraining.IS_DUPLICATE_TRAINING, query = "SELECT COUNT(mt) FROM MedicalTraining mt WHERE mt.id = :param1")
+@AttributeOverride(name="id", column=@Column(name = "training_id"))
 public class MedicalTraining extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -41,12 +41,13 @@ public class MedicalTraining extends PojoBase implements Serializable {
 	public static  final String IS_DUPLICATE_TRAINING = "MedicalTraining.isDuplicate";
 
 	// TODO MT03 - Add annotations for M:1.  What should be the cascade and fetch types?
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "school_id", referencedColumnName = "id",nullable = false)
+	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@JoinColumn(name = "school_id")
 	private MedicalSchool school;
 
 	// TODO MT04 - Add annotations for 1:1.  What should be the cascade and fetch types?
-	@OneToOne(mappedBy = "medicalTraining",cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "medicalTraining",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference("certificate-training")
 	private MedicalCertificate certificate;
 
 	@Embedded
