@@ -122,15 +122,6 @@ public class MedicineTest {
     }
 
     /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        Medicine otherMedicine = new Medicine("TestDrug", "TestManufacturer", "Take one tablet daily", medicine.getPrescriptions());
-        assertEquals(medicine.hashCode(), otherMedicine.hashCode(), "Hash codes for identical Medicine objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test

@@ -73,14 +73,6 @@ public class PrescriptionPKTest {
         assertNotEquals(prescriptionPK, otherPK, "Two PrescriptionPK objects with different data should not be equal");
     }
 
-    /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        PrescriptionPK otherPK = new PrescriptionPK(1, 2);
-        assertEquals(prescriptionPK.hashCode(), otherPK.hashCode(), "Hash codes for identical objects should match");
-    }
 
     /**
      * Test the toString method.

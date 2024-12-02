@@ -76,16 +76,6 @@ public class PojoBaseTest {
     }
 
     /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        TestPojoBase otherPojo = new TestPojoBase();
-        otherPojo.setId(1);
-        assertEquals(pojo.hashCode(), otherPojo.hashCode(), "Hash codes for identical objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test

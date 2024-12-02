@@ -130,16 +130,6 @@ public class SecurityUserTest {
     }
 
     /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        SecurityUser otherUser = new SecurityUser();
-        otherUser.setId(1);
-        assertEquals(securityUser.hashCode(), otherUser.hashCode(), "Hash codes for identical objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test

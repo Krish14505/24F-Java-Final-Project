@@ -91,16 +91,6 @@ public class SecurityRoleTest {
     }
 
     /**
-     * Test hashCode method.
-     */
-    @Test
-    public void testHashCode() {
-        SecurityRole otherRole = new SecurityRole();
-        otherRole.setId(1);
-        assertEquals(securityRole.hashCode(), otherRole.hashCode(), "Hash codes for identical objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test

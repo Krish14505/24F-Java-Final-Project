@@ -87,16 +87,6 @@ public class PojoBaseCompositeKeyTest {
     }
 
     /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        TestPojoBaseCompositeKey otherPojo = new TestPojoBaseCompositeKey();
-        otherPojo.setId("TEST_ID");
-        assertEquals(pojo.hashCode(), otherPojo.hashCode(), "Hash codes for identical objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test

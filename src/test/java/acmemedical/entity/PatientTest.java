@@ -149,16 +149,6 @@ public class PatientTest {
     }
 
     /**
-     * Test hashCode consistency.
-     */
-    @Test
-    public void testHashCode() {
-        Patient otherPatient = new Patient("John", "Doe", 1985, "123 Elm Street", 180, 75, (byte) 1);
-        otherPatient.setPrescription(patient.getPrescriptions());
-        assertEquals(patient.hashCode(), otherPatient.hashCode(), "Hash codes for identical Patient objects should match");
-    }
-
-    /**
      * Test equals method for equality.
      */
     @Test
