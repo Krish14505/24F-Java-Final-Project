@@ -39,7 +39,7 @@ public class TestResource {
         baseURI = BASE_URL;
     }
 
-    /**
+    /*
      * The following tests are for the physicianResource requests.
      */
 
@@ -109,4 +109,67 @@ public class TestResource {
                     .statusCode(200)
                     .contentType(ContentType.JSON);
     }
+
+    /*
+     * The following test methods are for the patient class
+     */
+
+    /**
+     * The method used to retrieve all the patients
+     */
+    @Test
+    public void testGetAllPatients(){
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD).header(ADMIN_AUTH_HEADER)
+                .when().get("/patient")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("size()",greaterThan(0));
+    }
+
+    /**
+     * The method used to test retrieving the specific Patient
+     */
+    @Test
+    public void testGetPatientById(){
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD).header(ADMIN_AUTH_HEADER)
+                .when().get("/patient/1")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(1));
+    }
+
+    /**
+     * The mentioned method is used to test to create a patient record !
+     */
+    @Test
+    public void testCreatePatient(){
+        String requestToAddNewPatient = """
+                    {
+                        "firstName" : "Steve",
+                        "lastName" : "Smith",
+                        "year" : 1980,
+                        "address" : "354 elgin st.",
+                        "height" : 187,
+                        "weight" : 78,
+                        "smoker" : 0
+                    }
+                """;
+
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD).header(ADMIN_AUTH_HEADER)
+                .contentType(ContentType.JSON)
+                .body(requestToAddNewPatient)
+                .when().post("/patient")
+                .then()
+                .statusCode(200)
+                .body("firstName",equalTo("Steve"))
+                .body("lastName",equalTo("Smith"));
+    }
+
+    /*
+     *The following test methods are for the Medicine.
+     */
+
+
 }
