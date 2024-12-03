@@ -2,7 +2,8 @@
  * File:  Medicine.java Course Materials CST 8277
  *
  * @author Teddy Yap
- * 
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  */
 package acmemedical.entity;
 
@@ -10,6 +11,8 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Basic;
@@ -38,9 +41,6 @@ import jakarta.persistence.Transient;
 //Hint - @NamedQuery uses the name which is defined in @Entity for JPQL, if no name is defined use class name.
 //Hint - @NamedNativeQuery can optionally be used if there is a need for SQL query.
 @NamedQuery(name = "Medicine.findAll", query = "SELECT m FROM Medicine m")
-//Added the NamedQuery that should be used for the Medicine:
-@NamedQuery(name="Medicine.findById",query="SELECT m FROM Medicine m WHERE m.id = :param1")
-@NamedQuery(name= "Medicine.isDuplicate", query="SELECT COUNT(m) FROM Medicine m WHERE m.id=:param1")
 //Hint - @AttributeOverride can override column details.  This entity uses medicine_id as its primary key name, it needs to override the name in the mapped super class.
 @AttributeOverride(name = "id", column = @Column(name = "medicine_id"))
 //Hint - PojoBase is inherited by any entity with integer as their primary key.
@@ -80,6 +80,7 @@ public class Medicine extends PojoBase implements Serializable {
 	@OneToMany(cascade=CascadeType.MERGE, fetch = FetchType.LAZY, mappedBy = "medicine")
 	// Hint - java.util.Set is used as a collection, however List could have been used as well.
 	// Hint - java.util.Set will be unique and also possibly can provide better get performance with HashCode.
+	@JsonIgnore
 	private Set<Prescription> prescriptions = new HashSet<>();
 
 	public Medicine() {

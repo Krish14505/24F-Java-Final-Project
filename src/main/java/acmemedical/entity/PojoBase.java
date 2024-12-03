@@ -3,34 +3,39 @@
  *
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
- * 
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  */
 package acmemedical.entity;
-
-import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
+
 /**
- * Author: Krish Chaudhary
- * version: 1
  * Abstract class that is base of (class) hierarchy for all @Entity classes
  */
 
 //TODO PB01 - Add annotation to define this class as superclass of all entities.  Please see Week 9 lecture slides.
-	@MappedSuperclass
+@MappedSuperclass
 //TODO PB02 - Add annotation to place all JPA annotations on fields.
-	@Access(AccessType.FIELD)
 //TODO PB03 - Add annotation for listener class.
-	@EntityListeners(PojoListener.class)
+@EntityListeners({PojoListener.class})
 public abstract class PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// TODO PB04 - Add missing annotations.
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
 	protected int id;
 
 	// TODO PB05 - Add missing annotations.
@@ -38,11 +43,11 @@ public abstract class PojoBase implements Serializable {
 	protected int version;
 
 	// TODO PB06 - Add missing annotations (hint, is this column on DB?).
-	@Column(name = "created", nullable = false,updatable = false)
+	@Column(name = "created", nullable = false, updatable = false)
 	protected LocalDateTime created;
 
 	// TODO PB07 - Add missing annotations (hint, is this column on DB?).
-	@Column(name = "updated")
+	@Column(name = "updated", nullable = false)
 	protected LocalDateTime updated;
 
 	public int getId() {
@@ -72,13 +77,14 @@ public abstract class PojoBase implements Serializable {
 	public LocalDateTime getUpdated() {
 		return updated;
 	}
-	
+
 	public void setUpdated(LocalDateTime updated) {
 		this.updated = updated;
 	}
 
 	/**
-	 * Very important:  Use getter's for member variables because JPA sometimes needs to intercept those calls<br/>
+	 * Very important: Use getter's for member variables because JPA sometimes needs
+	 * to intercept those calls<br/>
 	 * and go to the database to retrieve the value
 	 */
 	@Override
@@ -86,7 +92,8 @@ public abstract class PojoBase implements Serializable {
 		final int prime = 31;
 		int result = super.hashCode();
 		// Only include member variables that really contribute to an object's identity
-		// i.e. if variables like version/updated/name/etc. change throughout an object's lifecycle,
+		// i.e. if variables like version/updated/name/etc. change throughout an
+		// object's lifecycle,
 		// they shouldn't be part of the hashCode calculation
 		return prime * result + Objects.hash(getId());
 	}
@@ -100,16 +107,14 @@ public abstract class PojoBase implements Serializable {
 			return false;
 		}
 
-		/* Enhanced instanceof - yeah!
-		 * As of JDK 14, no need for additional 'silly' cast:
-		    if (animal instanceof Cat) {
-		        Cat cat = (Cat) animal;
-		        cat.meow();
-                // Other class Cat operations ...
-            }
+		/*
+		 * Enhanced instanceof - yeah! As of JDK 14, no need for additional 'silly'
+		 * cast: if (animal instanceof Cat) { Cat cat = (Cat) animal; cat.meow(); //
+		 * Other class Cat operations ... }
 		 */
 		if (obj instanceof PojoBase otherPojoBase) {
-			// See comment (above) in hashCode():  Compare using only member variables that are
+			// See comment (above) in hashCode(): Compare using only member variables that
+			// are
 			// truly part of an object's identity
 			return Objects.equals(this.getId(), otherPojoBase.getId());
 		}

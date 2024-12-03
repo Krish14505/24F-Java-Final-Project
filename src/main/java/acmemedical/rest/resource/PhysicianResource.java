@@ -4,7 +4,8 @@
  * @author Teddy Yap
  * @author Shariar (Shawn) Emami
  * @author (original) Mike Norman
- * 
+ * @author Harmeet Matharoo
+ * @date 2024-12-03
  */
 package acmemedical.rest.resource;
 
@@ -22,6 +23,7 @@ import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -97,13 +99,18 @@ public class PhysicianResource {
     //Only a user with the SecurityRole ‘ADMIN_ROLE’ can add a new physician.
     @RolesAllowed({ADMIN_ROLE})
     public Response addPhysician(Physician newPhysician) {
-        Response response = null;
-        Physician newPhysicianWithIdTimestamps = service.persistPhysician(newPhysician);
-        // Build a SecurityUser linked to the new physician
-        service.buildUserForNewPhysician(newPhysicianWithIdTimestamps);
-        response = Response.ok(newPhysicianWithIdTimestamps).build();
-        return response;
+        LOG.info("Received request to add a new physician: {} {}", newPhysician.getFirstName(), newPhysician.getLastName());
+        try {
+            Physician newPhysicianWithIdTimestamps = service.persistPhysician(newPhysician);
+            // Build a SecurityUser linked to the new physician
+            service.buildUserForNewPhysician(newPhysicianWithIdTimestamps);
+            return Response.status(Response.Status.CREATED).entity(newPhysicianWithIdTimestamps).build();
+        } catch (Exception e) {
+            LOG.error("Error adding physician", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error adding physician").build();
+        }
     }
+
 
     @PUT
     //Only an ‘ADMIN_ROLE’ user can associate a Medicine and/or Patient to a Physician.
@@ -114,6 +121,39 @@ public class PhysicianResource {
         Medicine medicine = service.setMedicineForPhysicianPatient(physicianId, patientId, newMedicine);
         response = Response.ok(medicine).build();
         return response;
+    }
+    
+    @DELETE
+    @Path("{id}")
+    @RolesAllowed({ADMIN_ROLE})
+    public Response deletePhysician(@PathParam("id") int id) {
+        LOG.info("Received request to delete physician with id: {}", id);
+        try {
+            service.deletePhysicianById(id);
+            return Response.noContent().build(); // 204 No Content
+        } catch (Exception e) {
+            LOG.error("Error deleting physician", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error deleting physician").build();
+        }
+    }
+
+    // **New PUT Endpoint for Updating Physician's Basic Information**
+    @PUT
+    @RolesAllowed({ADMIN_ROLE})
+    @Path("/{id}")
+    public Response updatePhysician(@PathParam("id") int id, Physician updatedPhysician) {
+        LOG.info("Received request to update physician with ID: {}", id);
+        try {
+            Physician physician = service.updatePhysicianById(id, updatedPhysician);
+            if (physician != null) {
+                return Response.ok(physician).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).entity("Physician not found").build();
+            }
+        } catch (Exception e) {
+            LOG.error("Error updating physician with ID: {}", id, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error updating physician").build();
+        }
     }
     
 }

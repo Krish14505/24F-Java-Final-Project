@@ -4,6 +4,8 @@
  *
  * @author Teddy Yap
  * @author Mike Norman
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  * 
  * Note:  Students do NOT need to change anything in this class.
  */
@@ -15,7 +17,6 @@ import static acmemedical.utility.MyConstants.USER_ROLE;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
@@ -38,8 +39,9 @@ public class RestConfig extends Application {
         Map<String, Object> props = new HashMap<>();
         props.put("jersey.config.jsonFeature", "JacksonFeature");
         // Add x-jersey-tracing tracing headers Note:  If more than 100 trace messages, need to alter configuration to allow for more
-        //props.put("jersey.config.server.tracing.type", "ALL");
-        //props.put("jersey.config.server.tracing.threshold", "VERBOSE");
+        props.put("jersey.config.server.tracing.type", "ALL");
+        props.put("jersey.config.server.tracing.threshold", "VERBOSE");
         return props;
     }
+    
 }

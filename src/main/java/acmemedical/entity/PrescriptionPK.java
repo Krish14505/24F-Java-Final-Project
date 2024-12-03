@@ -2,7 +2,8 @@
  * File:  PrescriptionPK.java Course Materials CST 8277
  *
  * @author Teddy Yap
- * 
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  */
 package acmemedical.entity;
 

@@ -2,15 +2,27 @@
  * File:  Physician.java Course Materials CST 8277
  *
  * @author Teddy Yap
- * 
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  */
 package acmemedical.entity;
-
-import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import acmemedical.utility.MyConstants;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 /**
  * The persistent class for the physician database table.
@@ -18,33 +30,42 @@ import java.util.Set;
 @SuppressWarnings("unused")
 
 //TODO PH01 - Add the missing annotations.
-@Entity
+@Entity // PH01 - Marks the class as a JPA entity
+@Table(name = "physician") // Maps the entity to the physician table
+@NamedQuery(name = Physician.ALL_PHYSICIANS_QUERY_NAME, query = "SELECT p FROM Physician p")
+@NamedQuery(
+	    name = "Physician.findWithCertificates",
+	    query = "SELECT p FROM Physician p LEFT JOIN FETCH p.medicalCertificates WHERE p.id = :id"
+	)
 //TODO PH02 - Do we need a mapped super class? If so, which one?
-@Table(name = "Physician")
-@NamedQuery(name=Physician.ALL_PHYSICIAN_QUERY_NAME, query= "SELECT p FROM Physician p")
 public class Physician extends PojoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String ALL_PHYSICIANS_QUERY_NAME = "Physician.findAll";
 
-	//variable used to reference the select query
-	public static final String ALL_PHYSICIAN_QUERY_NAME = "Physician.findALl";
-    public Physician() {
-    	super();
-    }
+
+	public Physician() {
+		super();
+	}
 
 	// TODO PH03 - Add annotations.
-	@Column(name = "first_name")
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
 	// TODO PH04 - Add annotations.
-	@Column(name = "last_name")
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
-	// TODO PH05 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
+	// TODO PH05 - Add annotations for 1:M relation. What should be the cascade and
+	// fetch types?
 	@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonBackReference // Backs the managed reference in MedicalCertificate
 	private Set<MedicalCertificate> medicalCertificates = new HashSet<>();
 
-	// TODO PH06 - Add annotations for 1:M relation.  What should be the cascade and fetch types?
-	@OneToMany(mappedBy = "physician", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	// TODO PH06 - Add annotations for 1:M relation. What should be the cascade and
+	// fetch types?
+	@OneToMany(mappedBy = "physician", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@JsonIgnore // Prevents serialization to avoid recursion
 	private Set<Prescription> prescriptions = new HashSet<>();
 
 	public String getFirstName() {
@@ -64,7 +85,7 @@ public class Physician extends PojoBase implements Serializable {
 	}
 
 	// TODO PH07 - Is an annotation needed here?
-	//No, we don't need an annotation on access modifier as we defined it on field.
+    @JsonIgnore
 	public Set<MedicalCertificate> getMedicalCertificates() {
 		return medicalCertificates;
 	}
@@ -74,8 +95,8 @@ public class Physician extends PojoBase implements Serializable {
 	}
 
 	// TODO PH08 - Is an annotation needed here?
-	//No, we don't need an annotation on access modifier as we defined it on field.
-    public Set<Prescription> getPrescriptions() {
+    @JsonIgnore
+	public Set<Prescription> getPrescriptions() {
 		return prescriptions;
 	}
 
@@ -87,7 +108,7 @@ public class Physician extends PojoBase implements Serializable {
 		setFirstName(firstName);
 		setLastName(lastName);
 	}
-	
-	//Inherited hashCode/equals is sufficient for this entity class
+
+	// Inherited hashCode/equals is sufficient for this entity class
 
 }

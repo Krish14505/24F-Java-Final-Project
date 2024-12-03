@@ -2,14 +2,27 @@
  * File:  Prescription.java Course Materials CST 8277
  *
  * @author Teddy Yap
- * 
+ * @author Harmeet Matharoo
+ * @date December 03, 2024
  */
 package acmemedical.entity;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
 
 @SuppressWarnings("unused")
 /**
@@ -18,12 +31,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "prescription")
 @Access(AccessType.FIELD)
-//Add the NamedQueries for the medialService class
-@NamedQueries({
-	@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p"),
-	@NamedQuery(name= "Prescription.findByid",query = "SELECT p FROM Prescription p WHERE p.id = :param1"),
-		@NamedQuery(name="Prescription.isDuplicate",query="SELECT COUNT(p) FROM Prescription p WHERE p.id=:param1")
-})
+@NamedQuery(name = "Prescription.findAll", query = "SELECT p FROM Prescription p")
 public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,19 +41,22 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 
 	// @MapsId is used to map a part of composite key to an entity.
 	@MapsId("physicianId")
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "physician_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+	@JoinColumn(name = "physician_id", referencedColumnName = "id", nullable = false, insertable = false, updatable = false)
 	private Physician physician;
-
-	//TODO PR01 - Add missing annotations.  Similar to physician, this field is a part of the composite key of this entity.  What should be the cascade and fetch types?  Reference to a patient is not optional.
+	
+	// TODO PR01 - Add missing annotations. Similar to physician, this field is a
+	// part of the composite key of this entity. What should be the cascade and
+	// fetch types? Reference to a patient is not optional.
 	@MapsId("patientId")
-	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "patient_id", referencedColumnName = "id", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id", nullable = false, insertable = false, updatable = false)
 	private Patient patient;
 
-	//TODO PR02 - Add missing annotations.  What should be the cascade and fetch types?
-	@ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "medicine_id", referencedColumnName = "id", nullable = false)
+	// TODO PR02 - Add missing annotations. What should be the cascade and fetch
+	// types?
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "medicine_id", referencedColumnName = "medicine_id", nullable = true)
 	private Medicine medicine;
 
 	@Column(name = "number_of_refills")
@@ -53,7 +64,6 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 
 	@Column(length = 100, name = "prescription_information")
 	private String prescriptionInformation;
-
 
 	public Prescription() {
 		id = new PrescriptionPK();
@@ -87,6 +97,7 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 		this.patient = patient;
 	}
 
+
 	public Medicine getMedicine() {
 		return medicine;
 	}
@@ -98,7 +109,7 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 	public int getNumberOfRefills() {
 		return numberOfRefills;
 	}
-	
+
 	public void setNumberOfRefills(int numberOfRefills) {
 		this.numberOfRefills = numberOfRefills;
 	}
@@ -111,6 +122,6 @@ public class Prescription extends PojoBaseCompositeKey<PrescriptionPK> implement
 		this.prescriptionInformation = prescriptionInformation;
 	}
 
-	//Inherited hashCode/equals is sufficient for this entity class
+	// Inherited hashCode/equals is sufficient for this entity class
 
 }

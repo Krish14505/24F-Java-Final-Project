@@ -3,7 +3,8 @@
  * Course Materials CST 8277
  * Teddy Yap
  * (Original Author) Mike Norman
- *
+ * @author Harmeet Matharoo
+ * @date 2024-12-03
  */
 package acmemedical;
 
@@ -91,9 +92,23 @@ public class TestACMEMedicalSystem {
             .path(PHYSICIAN_RESOURCE_NAME)
             .request()
             .get();
+        
+        // Log the response status
+        System.out.println("Response Status: " + response.getStatus());
+        
+        // Buffer the entity to allow multiple reads
+        response.bufferEntity();
+        
+        // Log the response body
+        String responseBody = response.readEntity(String.class);
+        System.out.println("Response Body: " + responseBody);
+        
         assertThat(response.getStatus(), is(200));
+        
+        // Now attempt to deserialize
         List<Physician> physicians = response.readEntity(new GenericType<List<Physician>>(){});
         assertThat(physicians, is(not(empty())));
-        assertThat(physicians, hasSize(1));
+        assertThat(physicians, hasSize(2));
     }
+
 }

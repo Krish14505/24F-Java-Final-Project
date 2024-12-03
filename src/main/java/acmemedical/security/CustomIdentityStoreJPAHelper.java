@@ -3,7 +3,8 @@
  * 
  * @author Teddy Yap
  * @author Mike Norman
- * Modified By: Krish Chaudhary
+ * @author Harmeet Matharoo
+ * @date 2024-12-03
  */
 package acmemedical.security;
 
@@ -50,14 +51,19 @@ public class CustomIdentityStoreJPAHelper {
          *         requests will fail, none of the REST'ful endpoints will work.
          *  
          */
+        
         try {
-            TypedQuery<SecurityUser> q = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class);
-            q.setParameter(PARAM1, username);
-            user = q.getSingleResult();
-        }catch (NoResultException e) {
-            LOG.debug("No user found with username = {}", username);
+            TypedQuery<SecurityUser> query = em.createNamedQuery("SecurityUser.userByName", SecurityUser.class);
+            query.setParameter("username", username); // Ensure the parameter name matches
+            user = query.getSingleResult();
+            LOG.debug("Found SecurityUser: {}", user);
+        } catch (NoResultException e) {
+            LOG.warn("No SecurityUser found for username: {}", username);
+        } catch (Exception e) {
+            LOG.error("Error finding SecurityUser by username: {}", username, e);
         }
         return user;
+        
     }
 
     public Set<String> findRoleNamesForUser(String username) {

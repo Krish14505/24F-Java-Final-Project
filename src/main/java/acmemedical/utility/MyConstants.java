@@ -3,7 +3,8 @@
  * Course Materials CST 8277
  * @author Teddy Yap
  * @author Mike Norman
- *
+ * @author Harmeet Matharoo
+ * @date 2024-12-03
  */
 package acmemedical.utility;
 
@@ -90,5 +91,6 @@ public interface MyConstants {
     //JPA constants
     public static final String PU_NAME = "acmemedical-PU";
     public static final String PARAM1 = "param1";
+    
 
 }
