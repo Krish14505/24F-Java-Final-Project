@@ -1,50 +1,112 @@
 package acmemedical;
 
+import static io.restassured.RestAssured.*;
 
-import io.restassured.http.Header;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.TestInstance;
+import static org.hamcrest.Matchers.*;
+import static io.restassured.RestAssured.*;
 
 import java.util.Base64;
 
-/**
- * This is the test case file for the Api request via postman
- */
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import io.restassured.http.ContentType;
+import io.restassured.http.Header;
+
+@TestInstance(Lifecycle.PER_CLASS)
 public class TestResource {
+
     private static final String BASE_URL = "http://localhost:8080/rest-acmemedical/api/v1";
     private static final String ADMIN_USER = "admin";
     private static final String ADMIN_PASSWORD = "admin";
     private static final String USER = "cst8277";
     private static final String USER_PASSWORD = "8277";
 
-    /**
-     * Creating the basic user Authentication headers
-     */
-    private static final String ADMIN_AUTHENTICATION = Base64.getEncoder().encodeToString((ADMIN_USER + ":" + ADMIN_PASSWORD).getBytes());
-    private static final String USER_AUTHENTICATION = Base64.getEncoder().encodeToString((USER + ":" + USER_PASSWORD).getBytes());
+    // Create Basic Auth headers
+    private static final String ADMIN_AUTH = Base64.getEncoder()
+            .encodeToString((ADMIN_USER + ":" + ADMIN_PASSWORD).getBytes());
+    private static final String USER_AUTH = Base64.getEncoder()
+            .encodeToString((USER + ":" + USER_PASSWORD).getBytes());
 
-    /**
-     * Creating the instance of the header
-     */
+    private static final Header ADMIN_AUTH_HEADER = new Header("Authorization", "Basic " + ADMIN_AUTH);
+    private static final Header USER_AUTH_HEADER = new Header("Authorization", "Basic " + USER_AUTH);
 
-    private static final Header ADMIN_AUTHENTICATION_HEADER = new Header("Authorisation","basic"+ ADMIN_AUTHENTICATION);
-    private static final Header USER_AUTHENTICATION_HEADER = new Header("Authorization","basic " + USER_AUTHENTICATION);
-
-
-    /**
-     * providing the set before running the test case
-     */
     @BeforeAll
-    public void setup(){
+    public void setup() {
         baseURI = BASE_URL;
     }
 
     /**
-     *  The following tests are for the physician class
+     * The following tests are for the physicianResource requests.
      */
+
+    /**
+     * This method is for testing that GET request for the physician is working as expected!
+     */
+    @Test
     public void testGetAllPhysicians(){
-        given().aut
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD)
+                .header(ADMIN_AUTH_HEADER)
+                .when().get("/physicians")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("size()",greaterThan(0));
+    }
+
+    /**
+     * This test method is used for the GET request by retrieving the specific physician.
+     */
+    @Test
+    public void testGetPhysicianById(){
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD)
+                .header(ADMIN_AUTH_HEADER)
+                .when().get("/physicians/1")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("size()",equalTo(1));
+    }
+
+    /**
+     * This test method is used to create the physician using POST request to the resource.
+     */
+    @Test
+    public void testCreatePhysician(){
+        String requestForCreatingPhysician = """
+                    {
+                        "firstName": "Krish",
+                        "lastName": "Chaudhary"
+                    }
+                """;
+
+        given().auth().basic(ADMIN_USER, ADMIN_PASSWORD)
+                .header(ADMIN_AUTH_HEADER)
+                .contentType(ContentType.JSON)
+                .body(requestForCreatingPhysician)
+                .when().post("/physician")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("firstName",equalTo("Krish"))
+                .body("lastName",equalTo("Chaudhary"));
+
+    }
+
+    /**
+     * The following is used to test when the current security user is authorised or not.
+     */
+    @Test
+    public void testUserAccessToSpecificPhysician(){
+            given()
+                    .auth().basic(ADMIN_USER, ADMIN_PASSWORD)
+                    .header(ADMIN_AUTH_HEADER)
+                    .when().get("/physicians/1")
+                    .then()
+                    .statusCode(200)
+                    .contentType(ContentType.JSON);
     }
 }
