@@ -171,5 +171,98 @@ public class TestResource {
      *The following test methods are for the Medicine.
      */
 
+    /**
+     * creating the test for retrieving all the medicine classes
+     */
 
+    @Test
+    public void testGetAllMedicine(){
+        given()
+            .header(ADMIN_AUTH_HEADER)
+                .when().get("/medicine")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("size()",greaterThan(0));
+
+    }
+
+    @Test
+    public void testGetMedicineById(){
+        given()
+                .header(ADMIN_AUTH_HEADER)
+                .when().get("/medicine/1")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(1));
+    }
+
+    @Test
+    public void testCreateMedicine(){
+        String requestToCreateNewMedicine = """
+                 {
+                     "drugName" : "Biogesic",
+                     "manufacturerName": "Unilab",
+                     "dosageInformation": "Take 4 tablets per day with 6 hours interval",
+                     "chemicalName": null,
+                     "genericName": "Paracetamol"   
+                 }
+                """;
+
+        given()
+                .header(ADMIN_AUTH_HEADER)
+                .contentType(ContentType.JSON)
+                .body(requestToCreateNewMedicine)
+                .when().post("/medicine")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("drugName",equalTo("Biogesic"));
+    }
+
+    /*
+     * Test cases for the MedicalSchool class
+     */
+
+    @Test
+    public void testGetAllMedicalSchools(){
+        given()
+                .header(ADMIN_AUTH_HEADER)
+                .when().get("/medicalschool")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("size()",greaterThan(0));
+    }
+
+    @Test
+    public void testGetMedicalSchoolById(){
+        given()
+            .header(ADMIN_AUTH_HEADER)
+                .when().get("/medicalschool/2")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("id", equalTo(2));
+    }
+
+    @Test
+    public void testCreateMedicalSchool(){
+        String requestToCreateNewMedicalSchool = """
+                {
+                    "isPublic" : false,
+                    "name": "US Medical School"
+                }
+                """;
+
+        given()
+                .header(ADMIN_AUTH_HEADER)
+                .contentType(ContentType.JSON)
+                .body(requestToCreateNewMedicalSchool)
+                .when().post("/medicalschool")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON);
+    }
 }
