@@ -1569,7 +1569,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"durationAndStatus\": {\r\n        \"active\": 1,\r\n        \"startDate\": \"2021-09-01T00:00:00\",\r\n        \"endDate\": \"2025-06-01T00:00:00\"\r\n    },\r\n    \"medicalSchool\": {\r\n        \"id\": 1,\r\n        \"entity-type\": \"private_school\"\r\n    }\r\n}\r\n\r\n",
+					"raw": "{\r\n    \"durationAndStatus\": {\r\n        \"active\": 1,\r\n        \"startDate\": \"2021-09-01T00:00:00\",\r\n        \"endDate\": \"2025-06-01T00:00:00\"\r\n    },\r\n    \"school\": {\r\n        \"id\": 1,\r\n        \"entity-type\": \"private_school\"\r\n    }\r\n}\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1621,7 +1621,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"durationAndStatus\": {\r\n        \"active\": 0,\r\n        \"startDate\": \"2022-09-01T00:00:00\",\r\n        \"endDate\": \"2026-06-01T00:00:00\"\r\n    },\r\n    \"medicalSchool\": {\r\n        \"id\": 1,\r\n        \"entity-type\": \"private_school\"\r\n    }\r\n}\r\n\r\n\r\n",
+					"raw": "{\r\n    \"durationAndStatus\": {\r\n        \"active\": 0,\r\n        \"startDate\": \"2022-09-01T00:00:00\",\r\n        \"endDate\": \"2026-06-01T00:00:00\"\r\n    },\r\n    \"school\": {\r\n        \"id\": 1,\r\n        \"entity-type\": \"private_school\"\r\n    }\r\n}\r\n\r\n\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
