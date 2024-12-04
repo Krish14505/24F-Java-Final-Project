@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: acmemedical.rest.resource.PatientResourceTest
+-------------------------------------------------------------------------------
+Tests run: 17, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.54 s - in acmemedical.rest.resource.PatientResourceTest
