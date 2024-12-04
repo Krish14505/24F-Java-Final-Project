@@ -40,7 +40,7 @@ public class SecurityRole implements Serializable {
     
     //TODO SR03 - Add annotations.
     @Basic(optional = false)
-    @Column(name = "role_name",nullable = false)
+    @Column(name = "name",nullable = false)
     protected String roleName;
     
     //TODO SR04 - Add annotations.

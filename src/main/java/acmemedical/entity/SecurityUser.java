@@ -45,7 +45,7 @@ public class SecurityUser implements Serializable, Principal {
     
     //TODO SU03 - Add annotations.
     @Basic(optional = false)
-    @Column(name = "user_name",nullable = false)
+    @Column(name = "username",nullable = false)
     protected String username;
     
     //TODO SU04 - Add annotations.
@@ -61,7 +61,7 @@ public class SecurityUser implements Serializable, Principal {
     
     //TODO SU06 - Add annotations.
     @ManyToMany(cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "user_has_roles",
+    @JoinTable(name = "user_has_role",
             joinColumns = @JoinColumn(referencedColumnName = "user_id", name = "user_id"), // This entity is SecurityUser
             inverseJoinColumns = @JoinColumn(referencedColumnName = "role_id", name = "role_id") // The other entity is SecurityRole
     )
