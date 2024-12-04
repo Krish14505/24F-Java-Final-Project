@@ -2,10 +2,9 @@
  * File:  PatientResourceTest.java
  * Course Materials CST 8277
  *
- * @author 
- *         Harmeet Matharoo
- * @date 2024-12-03
- */
+ * Author: Harmeet Matharoo
+ * Date: 2024-12-03
+ ********************************************************************************************************/
 package acmemedical.rest.resource;
 
 import static acmemedical.utility.MyConstants.PATIENT_RESOURCE_NAME;
@@ -19,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.ws.rs.client.Client;
@@ -34,11 +34,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +61,7 @@ import acmemedical.entity.Patient;
  * Date: 2024-12-03
  * </p>
  */
+@TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PatientResourceTest {
     private static final Class<?> _thisClaz = MethodHandles.lookup().lookupClass();
@@ -72,8 +76,11 @@ public class PatientResourceTest {
     static HttpAuthenticationFeature adminAuth;
     static HttpAuthenticationFeature userAuth;
 
+    // List to track created Patient IDs for cleanup
+    private List<Integer> createdPatientIds = new ArrayList<>();
+
     @BeforeAll
-    public static void oneTimeSetUp() throws Exception {
+    public void oneTimeSetUp() throws Exception {
         logger.debug("oneTimeSetUp");
         uri = UriBuilder
             .fromUri("http://localhost:8080/rest-acmemedical/api/v1")
@@ -145,7 +152,7 @@ public class PatientResourceTest {
      * - At least one patient exists in the database.
      * 
      * Expected Result:
-     * - HTTP Status 200 OK or 403 Forbidden based on roles.
+     * - HTTP Status 403 Forbidden.
      */
     @Test
     @Order(2)
@@ -158,9 +165,8 @@ public class PatientResourceTest {
                 .request(MediaType.APPLICATION_JSON)
                 .get();
 
-        // Assert Status Code (200 OK or 403 Forbidden)
-        assertThat(response.getStatus(), is(403)); // Adjust if user role has access
-
+        // Assert Status Code (403 Forbidden)
+        assertThat(response.getStatus(), is(403));
     }
 
     /**
@@ -209,6 +215,9 @@ public class PatientResourceTest {
         assertNotNull(createdPatient.getId(), "Patient ID should not be null");
         assertEquals("Charles", createdPatient.getFirstName(), "First name should match");
         assertEquals("Xavier", createdPatient.getLastName(), "Last name should match");
+
+        // Track the created Patient ID for cleanup
+        createdPatientIds.add(createdPatient.getId());
     }
 
     /**
@@ -321,7 +330,7 @@ public class PatientResourceTest {
     }
 
     /**
-     * Test Case ID: Patient_TC_08
+     * Test Case ID: Patient_TC_07
      * 
      * Test Description: Verify that an admin can update a patient's details.
      * 
@@ -334,9 +343,9 @@ public class PatientResourceTest {
      * - Response body contains the updated patient details.
      */
     @Test
-    @Order(8)
-    public void test08_updatePatientAsAdmin() {
-        logger.info("Executing test08_updatePatientAsAdmin");
+    @Order(7)
+    public void test07_updatePatientAsAdmin() {
+        logger.info("Executing test07_updatePatientAsAdmin");
 
         int patientId = 1; // Adjust based on your test data
         Patient updatedPatient = new Patient();
@@ -369,7 +378,7 @@ public class PatientResourceTest {
     }
 
     /**
-     * Test Case ID: Patient_TC_09
+     * Test Case ID: Patient_TC_08
      * 
      * Test Description: Verify that a regular user cannot update a patient's details.
      * 
@@ -381,9 +390,9 @@ public class PatientResourceTest {
      * - HTTP Status 403 Forbidden.
      */
     @Test
-    @Order(9)
-    public void test09_updatePatientAsUserForbidden() {
-        logger.info("Executing test09_updatePatientAsUserForbidden");
+    @Order(8)
+    public void test08_updatePatientAsUserForbidden() {
+        logger.info("Executing test08_updatePatientAsUserForbidden");
 
         int patientId = 1; // Adjust based on your test data
         Patient updatedPatient = new Patient();
@@ -406,7 +415,7 @@ public class PatientResourceTest {
     }
 
     /**
-     * Test Case ID: Patient_TC_10
+     * Test Case ID: Patient_TC_09
      * 
      * Test Description: Verify that an admin can delete a patient by ID.
      * 
@@ -419,10 +428,10 @@ public class PatientResourceTest {
      * - Patient is removed from the database.
      */
     @Test
-    @Order(10)
-    public void test10_deletePatientAsAdmin() {
-        logger.info("Executing test10_deletePatientAsAdmin");
-
+    @Order(9)
+    public void test09_deletePatientAsAdmin() {
+        logger.info("Executing test09_deletePatientAsAdmin");
+        
         int patientId = 3; // Adjust based on your test data
 
         Response response = webTarget
@@ -445,7 +454,7 @@ public class PatientResourceTest {
     }
 
     /**
-     * Test Case ID: Patient_TC_11
+     * Test Case ID: Patient_TC_10
      * 
      * Test Description: Verify that a regular user cannot delete a patient by ID.
      * 
@@ -457,9 +466,9 @@ public class PatientResourceTest {
      * - HTTP Status 403 Forbidden.
      */
     @Test
-    @Order(11)
-    public void test11_deletePatientAsUserForbidden() {
-        logger.info("Executing test11_deletePatientAsUserForbidden");
+    @Order(10)
+    public void test10_deletePatientAsUserForbidden() {
+        logger.info("Executing test10_deletePatientAsUserForbidden");
 
         int patientId = 1; // Adjust based on your test data
 
@@ -471,6 +480,35 @@ public class PatientResourceTest {
 
         // Assert Status Code
         assertThat(response.getStatus(), is(403));
+    }
+
+    /**
+     * Test Case ID: Patient_TC_11
+     * 
+     * Test Description: Verify that deleting a non-existent patient returns 404 Not Found.
+     * 
+     * Preconditions:
+     * - Admin user with username 'admin' and password 'admin' exists.
+     * - No patient exists with the specified ID.
+     * 
+     * Expected Result:
+     * - HTTP Status 404 Not Found.
+     */
+    @Test
+    @Order(11)
+    public void test11_deleteNonExistentPatientAsAdmin() {
+        logger.info("Executing test11_deleteNonExistentPatientAsAdmin");
+
+        int patientId = 9999; // Assume this ID does not exist
+
+        Response response = webTarget
+                .path(PATIENT_RESOURCE_NAME + "/" + patientId)
+                .register(adminAuth)
+                .request()
+                .delete();
+
+        // Assert Status Code
+        assertThat(response.getStatus(), is(404));
     }
 
     /**
@@ -651,6 +689,29 @@ public class PatientResourceTest {
         assertEquals(MediaType.APPLICATION_JSON, response.getHeaderString("Content-Type"));
     }
 
+    /**
+     * Cleanup method to remove any Patient entities created during tests.
+     */
+    @AfterAll
+    public void cleanup() {
+        logger.info("Executing cleanup after all tests");
+
+        for (Integer patientId : createdPatientIds) {
+            logger.debug("Deleting Patient with ID: {}", patientId);
+            Response response = webTarget
+                    .path(PATIENT_RESOURCE_NAME + "/" + patientId)
+                    .register(adminAuth)
+                    .request()
+                    .delete();
+
+            if (response.getStatus() == 204 || response.getStatus() == 200) {
+                logger.debug("Successfully deleted Patient with ID: {}", patientId);
+            } else {
+                logger.warn("Failed to delete Patient with ID: {}. Status: {}", patientId, response.getStatus());
+            }
+        }
+    }
+
     // Continue adding tests following the same pattern for the remaining test cases...
 
     // Example Placeholder for Additional Tests:
@@ -659,5 +720,4 @@ public class PatientResourceTest {
     // public void test21_someOtherTest() {
     //     // Implement test
     // }
-
 }
