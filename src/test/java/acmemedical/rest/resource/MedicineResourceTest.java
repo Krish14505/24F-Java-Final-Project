@@ -15,6 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.util.ArrayList; // Added
+import java.util.List;      // Added
 
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -28,10 +30,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.glassfish.jersey.logging.LoggingFeature;
+import org.junit.jupiter.api.AfterAll; // Added
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance; // Added
+import org.junit.jupiter.api.TestInstance.Lifecycle; // Added
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.MethodOrderer;
 
@@ -52,6 +57,7 @@ import acmemedical.entity.Medicine;
  * Date: December 03, 2024
  * </p>
  */
+@TestInstance(Lifecycle.PER_CLASS) // Added
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MedicineResourceTest {
     private static final Class<?> _thisClaz = MethodHandles.lookup().lookupClass();
@@ -66,8 +72,10 @@ public class MedicineResourceTest {
     static HttpAuthenticationFeature adminAuth;
     static HttpAuthenticationFeature userAuth;
 
+    private List<Integer> createdMedicineIds = new ArrayList<>(); // Added
+
     @BeforeAll
-    public static void oneTimeSetUp() throws Exception {
+    public void oneTimeSetUp() throws Exception { // Changed from static to instance method
         logger.debug("oneTimeSetUp");
         uri = UriBuilder
             .fromUri("http://localhost:8080/rest-acmemedical/api/v1")
@@ -136,8 +144,7 @@ public class MedicineResourceTest {
      * - At least one Medicine exists in the database.
      * 
      * Expected Result:
-     * - HTTP Status 200 OK.
-     * - Response body contains a list of medicines.
+     * - HTTP Status 403 Forbidden.
      */
     @Test
     @Order(2)
@@ -276,6 +283,9 @@ public class MedicineResourceTest {
         assertEquals("Unilab", createdMedicine.getManufacturerName(), "Manufacturer name should match");
         assertEquals("Take 4 tablets per day with 6 hours interval", createdMedicine.getDosageInformation(), "Dosage information should match");
         assertEquals("Paracetamol", createdMedicine.getGenericName(), "Generic name should match");
+
+        // Track the created Medicine ID for cleanup
+        createdMedicineIds.add(createdMedicine.getId());
     }
 
     /**
@@ -458,5 +468,28 @@ public class MedicineResourceTest {
 
         // Assert Status Code
         assertThat(response.getStatus(), is(403));
+    }
+
+    /**
+     * Cleanup method to remove any Medicine entities created during tests.
+     */
+    @AfterAll // Added
+    public void cleanup() { // Changed from static to instance method
+        logger.info("Executing cleanup after all tests");
+
+        for (Integer medId : createdMedicineIds) { // Added
+            logger.debug("Deleting Medicine with ID: {}", medId);
+            Response response = webTarget
+                    .path(MEDICINE_RESOURCE_NAME + "/" + medId)
+                    .register(adminAuth)
+                    .request()
+                    .delete();
+
+            if (response.getStatus() == 204 || response.getStatus() == 200) { // Added
+                logger.debug("Successfully deleted Medicine with ID: {}", medId);
+            } else {
+                logger.warn("Failed to delete Medicine with ID: {}. Status: {}", medId, response.getStatus());
+            }
+        }
     }
 }
