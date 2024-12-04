@@ -7,6 +7,7 @@
  */
 package acmemedical.entity;
 
+
 import acmemedical.rest.serializer.SecurityRoleSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
