@@ -36,7 +36,7 @@ public class PatientResource {
     @GET
     @RolesAllowed({ADMIN_ROLE,USER_ROLE})
     @Path(RESOURCE_PATH_ID_PATH)
-    public Response getPatientById(@PathParam (RESOURCE_PATH_ID_ELEMENT) int id){
+    public Response getPatientById(@PathParam(RESOURCE_PATH_ID_ELEMENT) int id){
         LOG.debug("Retrieving patient by id: {}", id);
         Patient patient = service.getPatientById(id);
         return Response.status(patient == null ? Response.Status.NOT_FOUND: Response.Status.OK).entity(patient).build();
